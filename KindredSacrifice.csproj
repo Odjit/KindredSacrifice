@@ -1,0 +1,237 @@
+<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
+		<AssemblyName>KindredSacrifice</AssemblyName>
+		<Description>Offer the living, awaken the altar.</Description>
+		<Version>1.0.0</Version>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+		<LangVersion>latest</LangVersion>
+		<RootNamespace>KindredSacrifice</RootNamespace>
+		<Authors>Odjit</Authors>
+		<BepInExPluginGuid>odjit.KindredSacrifice</BepInExPluginGuid>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="BepInEx.PluginInfoProps" Version="2.*" />
+		<PackageReference Include="VRising.VampireCommandFramework" Version="0.10.*" />
+	</ItemGroup>
+
+
+	<ItemGroup>
+		<Reference Include="Backtrace.Unity" HintPath="..\..\..\Repos\1_1 Update\interop\Backtrace.Unity.dll" />
+		<Reference Include="com.rlabrecque.steamworks.net" HintPath="..\..\..\Repos\1_1 Update\interop\com.rlabrecque.steamworks.net.dll" />
+		<Reference Include="com.stunlock.network.eos" HintPath="..\..\..\Repos\1_1 Update\interop\com.stunlock.network.eos.dll" />
+		<Reference Include="com.stunlock.platform" HintPath="..\..\..\Repos\1_1 Update\interop\com.stunlock.platform.dll" />
+		<Reference Include="com.stunlock.platform.pc" HintPath="..\..\..\Repos\1_1 Update\interop\com.stunlock.platform.pc.dll" />
+		<Reference Include="Il2CppMono.Security" HintPath="..\..\..\Repos\1_1 Update\interop\Il2CppMono.Security.dll" />
+		<Reference Include="Il2Cppmscorlib" HintPath="..\..\..\Repos\1_1 Update\interop\Il2Cppmscorlib.dll" />
+		<Reference Include="Il2CppSystem.Configuration" HintPath="..\..\..\Repos\1_1 Update\interop\Il2CppSystem.Configuration.dll" />
+		<Reference Include="Il2CppSystem.Core" HintPath="..\..\..\Repos\1_1 Update\interop\Il2CppSystem.Core.dll" />
+		<Reference Include="Il2CppSystem.Data" HintPath="..\..\..\Repos\1_1 Update\interop\Il2CppSystem.Data.dll" />
+		<Reference Include="Il2CppSystem" HintPath="..\..\..\Repos\1_1 Update\interop\Il2CppSystem.dll" />
+		<Reference Include="Il2CppSystem.Drawing" HintPath="..\..\..\Repos\1_1 Update\interop\Il2CppSystem.Drawing.dll" />
+		<Reference Include="Il2CppSystem.Net.Http" HintPath="..\..\..\Repos\1_1 Update\interop\Il2CppSystem.Net.Http.dll" />
+		<Reference Include="Il2CppSystem.Numerics" HintPath="..\..\..\Repos\1_1 Update\interop\Il2CppSystem.Numerics.dll" />
+		<Reference Include="Il2CppSystem.Runtime.CompilerServices.Unsafe" HintPath="..\..\..\Repos\1_1 Update\interop\Il2CppSystem.Runtime.CompilerServices.Unsafe.dll" />
+		<Reference Include="Il2CppSystem.Runtime.Serialization" HintPath="..\..\..\Repos\1_1 Update\interop\Il2CppSystem.Runtime.Serialization.dll" />
+		<Reference Include="Il2CppSystem.Xml" HintPath="..\..\..\Repos\1_1 Update\interop\Il2CppSystem.Xml.dll" />
+		<Reference Include="Il2CppSystem.Xml.Linq" HintPath="..\..\..\Repos\1_1 Update\interop\Il2CppSystem.Xml.Linq.dll" />
+		<Reference Include="Lidgren.Network" HintPath="..\..\..\Repos\1_1 Update\interop\Lidgren.Network.dll" />
+		<Reference Include="MagicaCloth" HintPath="..\..\..\Repos\1_1 Update\interop\MagicaCloth.dll" />
+		<Reference Include="Malee.ReorderableList" HintPath="..\..\..\Repos\1_1 Update\interop\Malee.ReorderableList.dll" />
+		<Reference Include="Newtonsoft.Json" HintPath="..\..\..\Repos\1_1 Update\interop\Newtonsoft.Json.dll" />
+		<Reference Include="ProjectM.Behaviours" HintPath="..\..\..\Repos\1_1 Update\interop\ProjectM.Behaviours.dll" />
+		<Reference Include="ProjectM.Camera" HintPath="..\..\..\Repos\1_1 Update\interop\ProjectM.Camera.dll" />
+		<Reference Include="ProjectM.CastleBuilding.Systems" HintPath="..\..\..\Repos\1_1 Update\interop\ProjectM.CastleBuilding.Systems.dll" />
+		<Reference Include="ProjectM.CastleDyeSystem" HintPath="..\..\..\Repos\1_1 Update\interop\ProjectM.CastleDyeSystem.dll" />
+		<Reference Include="ProjectM.CodeGeneration" HintPath="..\..\..\Repos\1_1 Update\interop\ProjectM.CodeGeneration.dll" />
+		<Reference Include="ProjectM.Conversion" HintPath="..\..\..\Repos\1_1 Update\interop\ProjectM.Conversion.dll" />
+		<Reference Include="ProjectM" HintPath="..\..\..\Repos\1_1 Update\interop\ProjectM.dll" />
+		<Reference Include="ProjectM.DualsensePC" HintPath="..\..\..\Repos\1_1 Update\interop\ProjectM.DualsensePC.dll" />
+		<Reference Include="ProjectM.Editor.SampleHandler" HintPath="..\..\..\Repos\1_1 Update\interop\ProjectM.Editor.SampleHandler.dll" />
+		<Reference Include="ProjectM.Gameplay.Scripting" HintPath="..\..\..\Repos\1_1 Update\interop\ProjectM.Gameplay.Scripting.dll" />
+		<Reference Include="ProjectM.Gameplay.Systems" HintPath="..\..\..\Repos\1_1 Update\interop\ProjectM.Gameplay.Systems.dll" />
+		<Reference Include="ProjectM.GeneratedNetCode" HintPath="..\..\..\Repos\1_1 Update\interop\ProjectM.GeneratedNetCode.dll" />
+		<Reference Include="ProjectM.Haptics" HintPath="..\..\..\Repos\1_1 Update\interop\ProjectM.Haptics.dll" />
+		<Reference Include="ProjectM.HUD" HintPath="..\..\..\Repos\1_1 Update\interop\ProjectM.HUD.dll" />
+		<Reference Include="ProjectM.Hybrid.Performance" HintPath="..\..\..\Repos\1_1 Update\interop\ProjectM.Hybrid.Performance.dll" />
+		<Reference Include="ProjectM.LiveBuildPerformanceTests.GlowingVampire" HintPath="..\..\..\Repos\1_1 Update\interop\ProjectM.LiveBuildPerformanceTests.GlowingVampire.dll" />
+		<Reference Include="ProjectM.LiveBuildPerformanceTests.Utilities" HintPath="..\..\..\Repos\1_1 Update\interop\ProjectM.LiveBuildPerformanceTests.Utilities.dll" />
+		<Reference Include="ProjectM.Misc.Systems" HintPath="..\..\..\Repos\1_1 Update\interop\ProjectM.Misc.Systems.dll" />
+		<Reference Include="ProjectM.Pathfinding" HintPath="..\..\..\Repos\1_1 Update\interop\ProjectM.Pathfinding.dll" />
+		<Reference Include="ProjectM.PerformanceTests.Editor" HintPath="..\..\..\Repos\1_1 Update\interop\ProjectM.PerformanceTests.Editor.dll" />
+		<Reference Include="ProjectM.Presentation.Systems" HintPath="..\..\..\Repos\1_1 Update\interop\ProjectM.Presentation.Systems.dll" />
+		<Reference Include="ProjectM.Roofs" HintPath="..\..\..\Repos\1_1 Update\interop\ProjectM.Roofs.dll" />
+		<Reference Include="ProjectM.ScriptableSystems" HintPath="..\..\..\Repos\1_1 Update\interop\ProjectM.ScriptableSystems.dll" />
+		<Reference Include="ProjectM.Shared.ColorData" HintPath="..\..\..\Repos\1_1 Update\interop\ProjectM.Shared.ColorData.dll" />
+		<Reference Include="ProjectM.Shared" HintPath="..\..\..\Repos\1_1 Update\interop\ProjectM.Shared.dll" />
+		<Reference Include="ProjectM.Shared.Systems" HintPath="..\..\..\Repos\1_1 Update\interop\ProjectM.Shared.Systems.dll" />
+		<Reference Include="ProjectM.Steam" HintPath="..\..\..\Repos\1_1 Update\interop\ProjectM.Steam.dll" />
+		<Reference Include="ProjectM.Terrain" HintPath="..\..\..\Repos\1_1 Update\interop\ProjectM.Terrain.dll" />
+		<Reference Include="ProjectM.VFXRendererUtility" HintPath="..\..\..\Repos\1_1 Update\interop\ProjectM.VFXRendererUtility.dll" />
+		<Reference Include="ProjectM.Wind.Shared" HintPath="..\..\..\Repos\1_1 Update\interop\ProjectM.Wind.Shared.dll" />
+		<Reference Include="RCONServerLib" HintPath="..\..\..\Repos\1_1 Update\interop\RCONServerLib.dll" />
+		<Reference Include="RootMotion" HintPath="..\..\..\Repos\1_1 Update\interop\RootMotion.dll" />
+		<Reference Include="RTLTMPro" HintPath="..\..\..\Repos\1_1 Update\interop\RTLTMPro.dll" />
+		<Reference Include="Rukhanka.DebugDrawer" HintPath="..\..\..\Repos\1_1 Update\interop\Rukhanka.DebugDrawer.dll" />
+		<Reference Include="Rukhanka.Hybrid" HintPath="..\..\..\Repos\1_1 Update\interop\Rukhanka.Hybrid.dll" />
+		<Reference Include="Rukhanka.Runtime" HintPath="..\..\..\Repos\1_1 Update\interop\Rukhanka.Runtime.dll" />
+		<Reference Include="Rukhanka.Toolbox" HintPath="..\..\..\Repos\1_1 Update\interop\Rukhanka.Toolbox.dll" />
+		<Reference Include="Sequencer" HintPath="..\..\..\Repos\1_1 Update\interop\Sequencer.dll" />
+		<Reference Include="Stunlock.Animation.StunCloth.Runtime" HintPath="..\..\..\Repos\1_1 Update\interop\Stunlock.Animation.StunCloth.Runtime.dll" />
+		<Reference Include="Stunlock.Console" HintPath="..\..\..\Repos\1_1 Update\interop\Stunlock.Console.dll" />
+		<Reference Include="Stunlock.ContentTests" HintPath="..\..\..\Repos\1_1 Update\interop\Stunlock.ContentTests.dll" />
+		<Reference Include="Stunlock.Core.Animation" HintPath="..\..\..\Repos\1_1 Update\interop\Stunlock.Core.Animation.dll" />
+		<Reference Include="Stunlock.Core" HintPath="..\..\..\Repos\1_1 Update\interop\Stunlock.Core.dll" />
+		<Reference Include="Stunlock.Fmod" HintPath="..\..\..\Repos\1_1 Update\interop\Stunlock.Fmod.dll" />
+		<Reference Include="Stunlock.Localization" HintPath="..\..\..\Repos\1_1 Update\interop\Stunlock.Localization.dll" />
+		<Reference Include="Stunlock.Metrics" HintPath="..\..\..\Repos\1_1 Update\interop\Stunlock.Metrics.dll" />
+		<Reference Include="Stunlock.Network" HintPath="..\..\..\Repos\1_1 Update\interop\Stunlock.Network.dll" />
+		<Reference Include="Stunlock.Network.EosSdk" HintPath="..\..\..\Repos\1_1 Update\interop\Stunlock.Network.EosSdk.dll" />
+		<Reference Include="Stunlock.Network.Lidgren" HintPath="..\..\..\Repos\1_1 Update\interop\Stunlock.Network.Lidgren.dll" />
+		<Reference Include="Stunlock.Network.Steam" HintPath="..\..\..\Repos\1_1 Update\interop\Stunlock.Network.Steam.dll" />
+		<Reference Include="Stunlock.Tools" HintPath="..\..\..\Repos\1_1 Update\interop\Stunlock.Tools.dll" />
+		<Reference Include="Unity.Burst" HintPath="..\..\..\Repos\1_1 Update\interop\Unity.Burst.dll" />
+		<Reference Include="Unity.Burst.Unsafe" HintPath="..\..\..\Repos\1_1 Update\interop\Unity.Burst.Unsafe.dll" />
+		<Reference Include="Unity.Collections" HintPath="..\..\..\Repos\1_1 Update\interop\Unity.Collections.dll" />
+		<Reference Include="Unity.Collections.LowLevel.ILSupport" HintPath="..\..\..\Repos\1_1 Update\interop\Unity.Collections.LowLevel.ILSupport.dll" />
+		<Reference Include="Unity.Deformations" HintPath="..\..\..\Repos\1_1 Update\interop\Unity.Deformations.dll" />
+		<Reference Include="Unity.Entities" HintPath="..\..\..\Repos\1_1 Update\interop\Unity.Entities.dll" />
+		<Reference Include="Unity.Entities.Graphics" HintPath="..\..\..\Repos\1_1 Update\interop\Unity.Entities.Graphics.dll" />
+		<Reference Include="Unity.Entities.Hybrid" HintPath="..\..\..\Repos\1_1 Update\interop\Unity.Entities.Hybrid.dll" />
+		<Reference Include="Unity.Entities.Hybrid.HybridComponents" HintPath="..\..\..\Repos\1_1 Update\interop\Unity.Entities.Hybrid.HybridComponents.dll" />
+		<Reference Include="Unity.InputSystem" HintPath="..\..\..\Repos\1_1 Update\interop\Unity.InputSystem.dll" />
+		<Reference Include="Unity.InputSystem.ForUI" HintPath="..\..\..\Repos\1_1 Update\interop\Unity.InputSystem.ForUI.dll" />
+		<Reference Include="Unity.Mathematics" HintPath="..\..\..\Repos\1_1 Update\interop\Unity.Mathematics.dll" />
+		<Reference Include="Unity.Mathematics.Extensions" HintPath="..\..\..\Repos\1_1 Update\interop\Unity.Mathematics.Extensions.dll" />
+		<Reference Include="Unity.Mathematics.Extensions.Hybrid" HintPath="..\..\..\Repos\1_1 Update\interop\Unity.Mathematics.Extensions.Hybrid.dll" />
+		<Reference Include="Unity.MemoryProfiler" HintPath="..\..\..\Repos\1_1 Update\interop\Unity.MemoryProfiler.dll" />
+		<Reference Include="Unity.Physics" HintPath="..\..\..\Repos\1_1 Update\interop\Unity.Physics.dll" />
+		<Reference Include="Unity.Physics.Hybrid" HintPath="..\..\..\Repos\1_1 Update\interop\Unity.Physics.Hybrid.dll" />
+		<Reference Include="Unity.Profiling.Core" HintPath="..\..\..\Repos\1_1 Update\interop\Unity.Profiling.Core.dll" />
+		<Reference Include="Unity.RenderPipelines.Core.Runtime" HintPath="..\..\..\Repos\1_1 Update\interop\Unity.RenderPipelines.Core.Runtime.dll" />
+		<Reference Include="Unity.RenderPipelines.HighDefinition.Config.Runtime" HintPath="..\..\..\Repos\1_1 Update\interop\Unity.RenderPipelines.HighDefinition.Config.Runtime.dll" />
+		<Reference Include="Unity.RenderPipelines.HighDefinition.Runtime" HintPath="..\..\..\Repos\1_1 Update\interop\Unity.RenderPipelines.HighDefinition.Runtime.dll" />
+		<Reference Include="Unity.Scenes" HintPath="..\..\..\Repos\1_1 Update\interop\Unity.Scenes.dll" />
+		<Reference Include="Unity.Serialization" HintPath="..\..\..\Repos\1_1 Update\interop\Unity.Serialization.dll" />
+		<Reference Include="Unity.TextMeshPro" HintPath="..\..\..\Repos\1_1 Update\interop\Unity.TextMeshPro.dll" />
+		<Reference Include="Unity.Transforms" HintPath="..\..\..\Repos\1_1 Update\interop\Unity.Transforms.dll" />
+		<Reference Include="Unity.Transforms.Hybrid" HintPath="..\..\..\Repos\1_1 Update\interop\Unity.Transforms.Hybrid.dll" />
+		<Reference Include="Unity.VisualEffectGraph.Runtime" HintPath="..\..\..\Repos\1_1 Update\interop\Unity.VisualEffectGraph.Runtime.dll" />
+		<Reference Include="UnityEngine.AccessibilityModule" HintPath="..\..\..\Repos\1_1 Update\interop\UnityEngine.AccessibilityModule.dll" />
+		<Reference Include="UnityEngine.AIModule" HintPath="..\..\..\Repos\1_1 Update\interop\UnityEngine.AIModule.dll" />
+		<Reference Include="UnityEngine.AndroidJNIModule" HintPath="..\..\..\Repos\1_1 Update\interop\UnityEngine.AndroidJNIModule.dll" />
+		<Reference Include="UnityEngine.AnimationModule" HintPath="..\..\..\Repos\1_1 Update\interop\UnityEngine.AnimationModule.dll" />
+		<Reference Include="UnityEngine.AssetBundleModule" HintPath="..\..\..\Repos\1_1 Update\interop\UnityEngine.AssetBundleModule.dll" />
+		<Reference Include="UnityEngine.AudioModule" HintPath="..\..\..\Repos\1_1 Update\interop\UnityEngine.AudioModule.dll" />
+		<Reference Include="UnityEngine.ClothModule" HintPath="..\..\..\Repos\1_1 Update\interop\UnityEngine.ClothModule.dll" />
+		<Reference Include="UnityEngine.ClusterInputModule" HintPath="..\..\..\Repos\1_1 Update\interop\UnityEngine.ClusterInputModule.dll" />
+		<Reference Include="UnityEngine.ClusterRendererModule" HintPath="..\..\..\Repos\1_1 Update\interop\UnityEngine.ClusterRendererModule.dll" />
+		<Reference Include="UnityEngine.ContentLoadModule" HintPath="..\..\..\Repos\1_1 Update\interop\UnityEngine.ContentLoadModule.dll" />
+		<Reference Include="UnityEngine.CoreModule" HintPath="..\..\..\Repos\1_1 Update\interop\UnityEngine.CoreModule.dll" />
+		<Reference Include="UnityEngine.CrashReportingModule" HintPath="..\..\..\Repos\1_1 Update\interop\UnityEngine.CrashReportingModule.dll" />
+		<Reference Include="UnityEngine.DirectorModule" HintPath="..\..\..\Repos\1_1 Update\interop\UnityEngine.DirectorModule.dll" />
+		<Reference Include="UnityEngine" HintPath="..\..\..\Repos\1_1 Update\interop\UnityEngine.dll" />
+		<Reference Include="UnityEngine.DSPGraphModule" HintPath="..\..\..\Repos\1_1 Update\interop\UnityEngine.DSPGraphModule.dll" />
+		<Reference Include="UnityEngine.GameCenterModule" HintPath="..\..\..\Repos\1_1 Update\interop\UnityEngine.GameCenterModule.dll" />
+		<Reference Include="UnityEngine.GIModule" HintPath="..\..\..\Repos\1_1 Update\interop\UnityEngine.GIModule.dll" />
+		<Reference Include="UnityEngine.GridModule" HintPath="..\..\..\Repos\1_1 Update\interop\UnityEngine.GridModule.dll" />
+		<Reference Include="UnityEngine.HotReloadModule" HintPath="..\..\..\Repos\1_1 Update\interop\UnityEngine.HotReloadModule.dll" />
+		<Reference Include="UnityEngine.ImageConversionModule" HintPath="..\..\..\Repos\1_1 Update\interop\UnityEngine.ImageConversionModule.dll" />
+		<Reference Include="UnityEngine.IMGUIModule" HintPath="..\..\..\Repos\1_1 Update\interop\UnityEngine.IMGUIModule.dll" />
+		<Reference Include="UnityEngine.InputLegacyModule" HintPath="..\..\..\Repos\1_1 Update\interop\UnityEngine.InputLegacyModule.dll" />
+		<Reference Include="UnityEngine.InputModule" HintPath="..\..\..\Repos\1_1 Update\interop\UnityEngine.InputModule.dll" />
+		<Reference Include="UnityEngine.JSONSerializeModule" HintPath="..\..\..\Repos\1_1 Update\interop\UnityEngine.JSONSerializeModule.dll" />
+		<Reference Include="UnityEngine.LocalizationModule" HintPath="..\..\..\Repos\1_1 Update\interop\UnityEngine.LocalizationModule.dll" />
+		<Reference Include="UnityEngine.ParticleSystemModule" HintPath="..\..\..\Repos\1_1 Update\interop\UnityEngine.ParticleSystemModule.dll" />
+		<Reference Include="UnityEngine.PerformanceReportingModule" HintPath="..\..\..\Repos\1_1 Update\interop\UnityEngine.PerformanceReportingModule.dll" />
+		<Reference Include="UnityEngine.Physics2DModule" HintPath="..\..\..\Repos\1_1 Update\interop\UnityEngine.Physics2DModule.dll" />
+		<Reference Include="UnityEngine.PhysicsModule" HintPath="..\..\..\Repos\1_1 Update\interop\UnityEngine.PhysicsModule.dll" />
+		<Reference Include="UnityEngine.ProfilerModule" HintPath="..\..\..\Repos\1_1 Update\interop\UnityEngine.ProfilerModule.dll" />
+		<Reference Include="UnityEngine.PropertiesModule" HintPath="..\..\..\Repos\1_1 Update\interop\UnityEngine.PropertiesModule.dll" />
+		<Reference Include="UnityEngine.RuntimeInitializeOnLoadManagerInitializerModule" HintPath="..\..\..\Repos\1_1 Update\interop\UnityEngine.RuntimeInitializeOnLoadManagerInitializerModule.dll" />
+		<Reference Include="UnityEngine.ScreenCaptureModule" HintPath="..\..\..\Repos\1_1 Update\interop\UnityEngine.ScreenCaptureModule.dll" />
+		<Reference Include="UnityEngine.SharedInternalsModule" HintPath="..\..\..\Repos\1_1 Update\interop\UnityEngine.SharedInternalsModule.dll" />
+		<Reference Include="UnityEngine.SpriteMaskModule" HintPath="..\..\..\Repos\1_1 Update\interop\UnityEngine.SpriteMaskModule.dll" />
+		<Reference Include="UnityEngine.SpriteShapeModule" HintPath="..\..\..\Repos\1_1 Update\interop\UnityEngine.SpriteShapeModule.dll" />
+		<Reference Include="UnityEngine.StreamingModule" HintPath="..\..\..\Repos\1_1 Update\interop\UnityEngine.StreamingModule.dll" />
+		<Reference Include="UnityEngine.SubstanceModule" HintPath="..\..\..\Repos\1_1 Update\interop\UnityEngine.SubstanceModule.dll" />
+		<Reference Include="UnityEngine.SubsystemsModule" HintPath="..\..\..\Repos\1_1 Update\interop\UnityEngine.SubsystemsModule.dll" />
+		<Reference Include="UnityEngine.TerrainModule" HintPath="..\..\..\Repos\1_1 Update\interop\UnityEngine.TerrainModule.dll" />
+		<Reference Include="UnityEngine.TerrainPhysicsModule" HintPath="..\..\..\Repos\1_1 Update\interop\UnityEngine.TerrainPhysicsModule.dll" />
+		<Reference Include="UnityEngine.TextCoreFontEngineModule" HintPath="..\..\..\Repos\1_1 Update\interop\UnityEngine.TextCoreFontEngineModule.dll" />
+		<Reference Include="UnityEngine.TextCoreTextEngineModule" HintPath="..\..\..\Repos\1_1 Update\interop\UnityEngine.TextCoreTextEngineModule.dll" />
+		<Reference Include="UnityEngine.TextRenderingModule" HintPath="..\..\..\Repos\1_1 Update\interop\UnityEngine.TextRenderingModule.dll" />
+		<Reference Include="UnityEngine.TilemapModule" HintPath="..\..\..\Repos\1_1 Update\interop\UnityEngine.TilemapModule.dll" />
+		<Reference Include="UnityEngine.TLSModule" HintPath="..\..\..\Repos\1_1 Update\interop\UnityEngine.TLSModule.dll" />
+		<Reference Include="UnityEngine.UI" HintPath="..\..\..\Repos\1_1 Update\interop\UnityEngine.UI.dll" />
+		<Reference Include="UnityEngine.UIElementsModule" HintPath="..\..\..\Repos\1_1 Update\interop\UnityEngine.UIElementsModule.dll" />
+		<Reference Include="UnityEngine.UIModule" HintPath="..\..\..\Repos\1_1 Update\interop\UnityEngine.UIModule.dll" />
+		<Reference Include="UnityEngine.UmbraModule" HintPath="..\..\..\Repos\1_1 Update\interop\UnityEngine.UmbraModule.dll" />
+		<Reference Include="UnityEngine.UnityAnalyticsCommonModule" HintPath="..\..\..\Repos\1_1 Update\interop\UnityEngine.UnityAnalyticsCommonModule.dll" />
+		<Reference Include="UnityEngine.UnityAnalyticsModule" HintPath="..\..\..\Repos\1_1 Update\interop\UnityEngine.UnityAnalyticsModule.dll" />
+		<Reference Include="UnityEngine.UnityConnectModule" HintPath="..\..\..\Repos\1_1 Update\interop\UnityEngine.UnityConnectModule.dll" />
+		<Reference Include="UnityEngine.UnityCurlModule" HintPath="..\..\..\Repos\1_1 Update\interop\UnityEngine.UnityCurlModule.dll" />
+		<Reference Include="UnityEngine.UnityTestProtocolModule" HintPath="..\..\..\Repos\1_1 Update\interop\UnityEngine.UnityTestProtocolModule.dll" />
+		<Reference Include="UnityEngine.UnityWebRequestAssetBundleModule" HintPath="..\..\..\Repos\1_1 Update\interop\UnityEngine.UnityWebRequestAssetBundleModule.dll" />
+		<Reference Include="UnityEngine.UnityWebRequestAudioModule" HintPath="..\..\..\Repos\1_1 Update\interop\UnityEngine.UnityWebRequestAudioModule.dll" />
+		<Reference Include="UnityEngine.UnityWebRequestModule" HintPath="..\..\..\Repos\1_1 Update\interop\UnityEngine.UnityWebRequestModule.dll" />
+		<Reference Include="UnityEngine.UnityWebRequestTextureModule" HintPath="..\..\..\Repos\1_1 Update\interop\UnityEngine.UnityWebRequestTextureModule.dll" />
+		<Reference Include="UnityEngine.UnityWebRequestWWWModule" HintPath="..\..\..\Repos\1_1 Update\interop\UnityEngine.UnityWebRequestWWWModule.dll" />
+		<Reference Include="UnityEngine.VehiclesModule" HintPath="..\..\..\Repos\1_1 Update\interop\UnityEngine.VehiclesModule.dll" />
+		<Reference Include="UnityEngine.VFXModule" HintPath="..\..\..\Repos\1_1 Update\interop\UnityEngine.VFXModule.dll" />
+		<Reference Include="UnityEngine.VideoModule" HintPath="..\..\..\Repos\1_1 Update\interop\UnityEngine.VideoModule.dll" />
+		<Reference Include="UnityEngine.VirtualTexturingModule" HintPath="..\..\..\Repos\1_1 Update\interop\UnityEngine.VirtualTexturingModule.dll" />
+		<Reference Include="UnityEngine.VRModule" HintPath="..\..\..\Repos\1_1 Update\interop\UnityEngine.VRModule.dll" />
+		<Reference Include="UnityEngine.WindModule" HintPath="..\..\..\Repos\1_1 Update\interop\UnityEngine.WindModule.dll" />
+		<Reference Include="UnityEngine.XRModule" HintPath="..\..\..\Repos\1_1 Update\interop\UnityEngine.XRModule.dll" />
+		<Reference Include="VivoxUnity" HintPath="..\..\..\Repos\1_1 Update\interop\VivoxUnity.dll" />
+		<Reference Include="__Generated" HintPath="..\..\..\Repos\1_1 Update\interop\__Generated.dll" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Reference Include="0Harmony" HintPath="..\..\..\Repos\1_1 Update\core\0Harmony.dll" />
+		<Reference Include="AsmResolver" HintPath="..\..\..\Repos\1_1 Update\core\AsmResolver.dll" />
+		<Reference Include="AsmResolver.DotNet" HintPath="..\..\..\Repos\1_1 Update\core\AsmResolver.DotNet.dll" />
+		<Reference Include="AsmResolver.PE" HintPath="..\..\..\Repos\1_1 Update\core\AsmResolver.PE.dll" />
+		<Reference Include="AsmResolver.PE.File" HintPath="..\..\..\Repos\1_1 Update\core\AsmResolver.PE.File.dll" />
+		<Reference Include="AssetRipper.CIL" HintPath="..\..\..\Repos\1_1 Update\core\AssetRipper.CIL.dll" />
+		<Reference Include="AssetRipper.Primitives" HintPath="..\..\..\Repos\1_1 Update\core\AssetRipper.Primitives.dll" />
+		<Reference Include="BepInEx.Core" HintPath="..\..\..\Repos\1_1 Update\core\BepInEx.Core.dll" />
+		<Reference Include="BepInEx.Preloader.Core" HintPath="..\..\..\Repos\1_1 Update\core\BepInEx.Preloader.Core.dll" />
+		<Reference Include="BepInEx.Unity.Common" HintPath="..\..\..\Repos\1_1 Update\core\BepInEx.Unity.Common.dll" />
+		<Reference Include="BepInEx.Unity.IL2CPP" HintPath="..\..\..\Repos\1_1 Update\core\BepInEx.Unity.IL2CPP.dll" />
+		<Reference Include="Cpp2IL.Core" HintPath="..\..\..\Repos\1_1 Update\core\Cpp2IL.Core.dll" />
+		<Reference Include="Disarm" HintPath="..\..\..\Repos\1_1 Update\core\Disarm.dll" />
+		<Reference Include="Gee.External.Capstone" HintPath="..\..\..\Repos\1_1 Update\core\Gee.External.Capstone.dll" />
+		<Reference Include="Iced" HintPath="..\..\..\Repos\1_1 Update\core\Iced.dll" />
+		<Reference Include="Il2CppInterop.Common" HintPath="..\..\..\Repos\1_1 Update\core\Il2CppInterop.Common.dll" />
+		<Reference Include="Il2CppInterop.Generator" HintPath="..\..\..\Repos\1_1 Update\core\Il2CppInterop.Generator.dll" />
+		<Reference Include="Il2CppInterop.HarmonySupport" HintPath="..\..\..\Repos\1_1 Update\core\Il2CppInterop.HarmonySupport.dll" />
+		<Reference Include="Il2CppInterop.Runtime" HintPath="..\..\..\Repos\1_1 Update\core\Il2CppInterop.Runtime.dll" />
+		<Reference Include="LibCpp2IL" HintPath="..\..\..\Repos\1_1 Update\core\LibCpp2IL.dll" />
+		<Reference Include="Mono.Cecil" HintPath="..\..\..\Repos\1_1 Update\core\Mono.Cecil.dll" />
+		<Reference Include="Mono.Cecil.Mdb" HintPath="..\..\..\Repos\1_1 Update\core\Mono.Cecil.Mdb.dll" />
+		<Reference Include="Mono.Cecil.Pdb" HintPath="..\..\..\Repos\1_1 Update\core\Mono.Cecil.Pdb.dll" />
+		<Reference Include="Mono.Cecil.Rocks" HintPath="..\..\..\Repos\1_1 Update\core\Mono.Cecil.Rocks.dll" />
+		<Reference Include="MonoMod.Backports" HintPath="..\..\..\Repos\1_1 Update\core\MonoMod.Backports.dll" />
+		<Reference Include="MonoMod.ILHelpers" HintPath="..\..\..\Repos\1_1 Update\core\MonoMod.ILHelpers.dll" />
+		<Reference Include="MonoMod.RuntimeDetour" HintPath="..\..\..\Repos\1_1 Update\core\MonoMod.RuntimeDetour.dll" />
+		<Reference Include="MonoMod.Utils" HintPath="..\..\..\Repos\1_1 Update\core\MonoMod.Utils.dll" />
+		<Reference Include="SemanticVersioning" HintPath="..\..\..\Repos\1_1 Update\core\SemanticVersioning.dll" />
+		<Reference Include="StableNameDotNet" HintPath="..\..\..\Repos\1_1 Update\core\StableNameDotNet.dll" />
+		<Reference Include="WasmDisassembler" HintPath="..\..\..\Repos\1_1 Update\core\WasmDisassembler.dll" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="Utils\" />
+	</ItemGroup>
+
+	<PropertyGroup>
+		<NoWarn>NU1605</NoWarn>
+	</PropertyGroup>
+
+	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
+		<Exec Command="copy &quot;$(TargetPath)&quot; &quot;C:\Program Files (x86)\Steam\steamapps\common\VRisingDedicatedServer\BepInEx\plugins&quot; " ContinueOnError="true" />
+	</Target>
+</Project>
