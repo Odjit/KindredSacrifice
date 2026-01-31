@@ -1,3 +1,4 @@
+![](logo.png)
 # KindredSacrifice for V Rising
 
 KindredSacrifice is a server modification for V Rising that adds a blood sacrifice system with a ritual, blood moon mechanics, and bloodtype based rewards. This gives players something else do to with additional prisoners.
