@@ -802,6 +802,7 @@ internal class SacrificeService
             if (cageEntity != Entity.Null && entityManager.Exists(cageEntity))
             {
                 Core.BuffService.ApplyBuff(Entity.Null, cageEntity, Prefabs.Buff_PerfectSacrifice_Cage, -1);
+                Core.BuffService.ApplyBuff(Entity.Null, cageEntity, Prefabs.Buff_PerfectSacrifice_BloodRain, -1);
             }
         }
         else
@@ -875,6 +876,7 @@ internal class SacrificeService
             if (cageEntity != Entity.Null && entityManager.Exists(cageEntity))
             {
                 Core.BuffService.RemoveBuff(cageEntity, Prefabs.Buff_PerfectSacrifice_Cage);
+                Core.BuffService.RemoveBuff(cageEntity, Prefabs.Buff_PerfectSacrifice_BloodRain);
             }
         }
         else
