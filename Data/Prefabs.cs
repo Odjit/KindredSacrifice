@@ -16,7 +16,8 @@ public static class Prefabs
     public static readonly PrefabGUID Buff_SacrificeFlames = new(451676082);
     public static readonly PrefabGUID Buff_PerfectSacrifice_Table = new(136816739); 
     public static readonly PrefabGUID Buff_PerfectSacrifice_Cage = new(40754527);
-    public static readonly PrefabGUID Buff_PerfectSacrifice_BloodRain = new(-9720388); 
+    public static readonly PrefabGUID Buff_PerfectSacrifice_BloodRain = new(-9720388);
+    public static readonly PrefabGUID Buff_PerfectSacrifice_Players = new(741867216);
     public static readonly PrefabGUID Buff_General_Ignite = new(1533067119); 
 
     // Map icon prefabs

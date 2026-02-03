@@ -549,7 +549,8 @@ internal class SacrificeService
 
                 if (triggeredBloodmoon)
                 {
-                    FixedString512Bytes globalMessage = $"<color=#b00><b>●</b> The bloodmoon <color=#d00>rises. <color=#f00>{roundedQuality}% {bloodTypeName} <color=#d00>blood spilled upon <color=#b00>the altar and fulfilled the ritual. <b>✽⃝";
+                    var timing = BloodMoonRisesTonight() ? "tonight" : "tomorrow night";
+                    FixedString512Bytes globalMessage = $"<color=#b00><b>●</b> The bloodmoon <color=#d00>will rise {timing}. <color=#f00>{roundedQuality}% {bloodTypeName} <color=#d00>blood spilled upon <color=#b00>the altar fulfilled the ritual. <b>✽⃝";
                     ServerChatUtils.SendSystemMessageToAllClients(entityManager, ref globalMessage);
                 }
 
@@ -734,6 +735,39 @@ internal class SacrificeService
         }
     }
 
+    bool BloodMoonRisesTonight()
+    {
+        try
+        {
+            var gameTimeModifiers = Core.ServerGameSettingsSystem._Settings.GameTimeModifiers;
+            var entities = dayNightCycleQuery.ToEntityArray(Allocator.Temp);
+
+            foreach (var entity in entities)
+            {
+                if (entity.Has<DayNightCycle>())
+                {
+                    var cycle = entity.Read<DayNightCycle>();
+                    var now = cycle.GameDateTimeNow;
+
+                    var dayEndHour = gameTimeModifiers.DayEndHour;
+                    var dayEndMinute = gameTimeModifiers.DayEndMinute;
+                    var currentTimeInMinutes = now.Hour * 60 + now.Minute;
+                    var dayEndInMinutes = dayEndHour * 60 + dayEndMinute;
+
+                    entities.Dispose();
+                    // Before evening (PreDawn or DayTime) = tonight, Evening = tomorrow night
+                    return currentTimeInMinutes < dayEndInMinutes;
+                }
+            }
+            entities.Dispose();
+        }
+        catch (Exception ex)
+        {
+            Core.LogException(ex, nameof(BloodMoonRisesTonight));
+        }
+        return true;
+    }
+
     void SetNextBloodMoon()
     {
         try
@@ -803,6 +837,16 @@ internal class SacrificeService
             {
                 Core.BuffService.ApplyBuff(Entity.Null, cageEntity, Prefabs.Buff_PerfectSacrifice_Cage, -1);
                 Core.BuffService.ApplyBuff(Entity.Null, cageEntity, Prefabs.Buff_PerfectSacrifice_BloodRain, -1);
+            }
+
+            // Apply buff to sacrificer
+            if (ownerUserEntity != Entity.Null && entityManager.Exists(ownerUserEntity))
+            {
+                var charEntity = ownerUserEntity.GetCharacter();
+                if (charEntity != Entity.Null && entityManager.Exists(charEntity))
+                {
+                    Core.BuffService.ApplyBuff(ownerUserEntity, charEntity, Prefabs.Buff_PerfectSacrifice_Players, -1);
+                }
             }
         }
         else
@@ -877,6 +921,16 @@ internal class SacrificeService
             {
                 Core.BuffService.RemoveBuff(cageEntity, Prefabs.Buff_PerfectSacrifice_Cage);
                 Core.BuffService.RemoveBuff(cageEntity, Prefabs.Buff_PerfectSacrifice_BloodRain);
+            }
+
+            // Remove buff from sacrificer
+            if (ownerUserEntity != Entity.Null && entityManager.Exists(ownerUserEntity))
+            {
+                var charEntity = ownerUserEntity.GetCharacter();
+                if (charEntity != Entity.Null && entityManager.Exists(charEntity))
+                {
+                    Core.BuffService.RemoveBuff(charEntity, Prefabs.Buff_PerfectSacrifice_Players);
+                }
             }
         }
         else
