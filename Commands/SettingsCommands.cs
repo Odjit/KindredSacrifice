@@ -14,7 +14,7 @@ internal class SettingsCommands
 		var settings = Core.ConfigService.Settings;
 
 		ctx.Reply("<color=#b00> ̷͠ ͠ ⸸⃝✽⃝ <color=#d00>Blood Sacrifice <color=#f00>Settings <color=#d00>✽⃝  ̷͠⸸⃝̷͠  <color=#b00>");
-		ctx.Reply($"<color=#f44>Messages:</color> <color=#c24>{settings.EnableSacrificeMessages}</color> | <color=#f44>Lockout:</color> <color=#c24>{settings.BloodMoonLockoutNights} nights</color>");
+		ctx.Reply($"<color=#f44>Messages:</color> <color=#c24>{settings.EnableSacrificeMessages}</color> | <color=#f44>Accumulation:</color> <color=#c24>{settings.EnableBloodmoonAccumulation}</color> | <color=#f44>Lockout:</color> <color=#c24>{settings.BloodMoonLockoutNights} nights</color>");
 
 		var buffTypes = new System.Collections.Generic.List<string>();
 		var merlotTypes = new System.Collections.Generic.List<string>();
@@ -108,6 +108,14 @@ internal class SettingsCommands
 		Core.ConfigService.Settings.EnableSacrificeMessages = enabled;
 		Core.ConfigService.SaveSettings();
 		ctx.Reply($"<color=#f44>Sacrifice messages</color> <color=#c24>{(enabled ? "enabled" : "disabled")}.</color>");
+	}
+
+	[Command("setaccumulation", "sa", description: "Toggle bloodmoon accumulation on/off", adminOnly: true)]
+	public static void SetAccumulation(ChatCommandContext ctx, bool enabled)
+	{
+		Core.ConfigService.Settings.EnableBloodmoonAccumulation = enabled;
+		Core.ConfigService.SaveSettings();
+		ctx.Reply($"<color=#f44>Bloodmoon accumulation</color> <color=#c24>{(enabled ? "enabled" : "disabled")}.</color>");
 	}
 
 	[Command("setlockout", "sl", description: "Set blood moon lockout nights (min 2)", adminOnly: true)]

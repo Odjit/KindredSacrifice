@@ -134,6 +134,8 @@ internal class SacrificeSettings
 {
     public bool EnableSacrificeMessages { get; set; } = true;
 
+    public bool EnableBloodmoonAccumulation { get; set; } = true;
+
     public int BloodMoonLockoutNights { get; set; } = 3;
 
     public Dictionary<string, SacrificeReward> BloodTypeRewards { get; set; } = new()

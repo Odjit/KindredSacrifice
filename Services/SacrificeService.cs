@@ -511,24 +511,30 @@ internal class SacrificeService
 				: "Unknown";
 			var bloodContribution = (bloodQuality / 100f) * (bloodQuality / 100f) * 10000f;
 
-            // Add to global accumulator
-            var previousTotal = Core.ConfigService.WorldState.AccumulatedBloodPoints;
-            Core.ConfigService.WorldState.AccumulatedBloodPoints += bloodContribution;
-            var newTotal = Core.ConfigService.WorldState.AccumulatedBloodPoints;
-            logger.LogInfo($"Accumulated blood points: {previousTotal:F2} -> {newTotal:F2} (target: 10000)");
-
-            Core.ConfigService.SaveWorldState();
-
-            // Check if we've reached the bloodmoon threshold
+            // Add to global accumulator (if enabled)
             bool triggeredBloodmoon = false;
-            if (newTotal >= 10000f)
+            float previousTotal = 0f;
+            float newTotal = 0f;
+
+            if (Core.ConfigService.Settings.EnableBloodmoonAccumulation)
             {
-                SetNextBloodMoon();
-                Core.ConfigService.WorldState.AccumulatedBloodPoints = 0f;
-                Core.ConfigService.WorldState.LastBloodMoonDay = GetCurrentDay();
+                previousTotal = Core.ConfigService.WorldState.AccumulatedBloodPoints;
+                Core.ConfigService.WorldState.AccumulatedBloodPoints += bloodContribution;
+                newTotal = Core.ConfigService.WorldState.AccumulatedBloodPoints;
+                logger.LogInfo($"Accumulated blood points: {previousTotal:F2} -> {newTotal:F2} (target: 10000)");
+
                 Core.ConfigService.SaveWorldState();
-                triggeredBloodmoon = true;
-                logger.LogInfo($"Blood moon triggered. Lockout duration: {Core.ConfigService.Settings.BloodMoonLockoutNights} nights");
+
+                // Check if we've reached the bloodmoon threshold
+                if (newTotal >= 10000f)
+                {
+                    SetNextBloodMoon();
+                    Core.ConfigService.WorldState.AccumulatedBloodPoints = 0f;
+                    Core.ConfigService.WorldState.LastBloodMoonDay = GetCurrentDay();
+                    Core.ConfigService.SaveWorldState();
+                    triggeredBloodmoon = true;
+                    logger.LogInfo($"Blood moon triggered. Lockout duration: {Core.ConfigService.Settings.BloodMoonLockoutNights} nights");
+                }
             }
 
             // Check for 100% quality blood type-specific reward
@@ -545,7 +551,8 @@ internal class SacrificeService
 
             if (Core.ConfigService.Settings.EnableSacrificeMessages)
             {
-                var progressPercent = (newTotal / 10000f) * 100f;
+                var accumulationEnabled = Core.ConfigService.Settings.EnableBloodmoonAccumulation;
+                var progressPercent = accumulationEnabled ? (newTotal / 10000f) * 100f : 0f;
 
                 if (triggeredBloodmoon)
                 {
@@ -563,9 +570,13 @@ internal class SacrificeService
                     {
                         message = $"<color=#b00>The altar is <color=#d00>satisfied, <color=#f00>and your offering <color=#d00>grants you <color=#b00>a boon.";
                     }
-                    else if (!triggeredBloodmoon)
+                    else if (!triggeredBloodmoon && accumulationEnabled)
                     {
                         message = $"<color=#b40><b>⽕⃝̒</b> The ritual concludes but <color=#d50>the altar remains hungry. <color=#f60>{roundedQuality}% blood offered. <color=#d50>(+{bloodContribution:F0} pts) <color=#b40>Progress: {progressPercent:F1}%";
+                    }
+                    else if (!triggeredBloodmoon && !accumulationEnabled)
+                    {
+                        message = $"<color=#b40><b>⽕⃝̒</b> <color=#f60>{roundedQuality}% {bloodTypeName} <color=#d50>offered. Inadequate for a boon.";
                     }
                     else
                     {
@@ -575,7 +586,10 @@ internal class SacrificeService
                     ServerChatUtils.SendSystemMessageToClient(entityManager, user, ref message);
                 }
 
-                logger.LogInfo($"Sacrifice: {sacrificerName} - {roundedQuality}% {bloodTypeName} (+{bloodContribution:F0} pts)");
+                if (accumulationEnabled)
+                    logger.LogInfo($"Sacrifice: {sacrificerName} - {roundedQuality}% {bloodTypeName} (+{bloodContribution:F0} pts)");
+                else
+                    logger.LogInfo($"Sacrifice: {sacrificerName} - {roundedQuality}% {bloodTypeName}");
             }
         }
         catch (Exception ex)

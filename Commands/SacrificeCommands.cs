@@ -144,18 +144,27 @@ internal class SacrificeCommands
     {
         try
         {
+            var settings = Core.ConfigService.Settings;
             var worldState = Core.ConfigService.WorldState;
-            var progress = (worldState.AccumulatedBloodPoints / 10000f) * 100f;
 
             ctx.Reply("<color=#b00> ̷͠ ͠ ⸸⃝✽⃝ <color=#d00>Blood Sacrifice <color=#f00>Status <color=#d00>✽⃝  ̷͠⸸⃝̷͠  <color=#b00>");
-			ctx.Reply($"<color=#b00>Blood Moon Progress: <color=#d00>{progress:F1}% <color=#f00>({worldState.AccumulatedBloodPoints:F0}/10000 <color=#d00>points)");
+
+            if (settings.EnableBloodmoonAccumulation)
+            {
+                var progress = (worldState.AccumulatedBloodPoints / 10000f) * 100f;
+                ctx.Reply($"<color=#b00>Blood Moon Progress: <color=#d00>{progress:F1}% <color=#f00>({worldState.AccumulatedBloodPoints:F0}/10000 <color=#d00>points)");
+            }
+            else
+            {
+                ctx.Reply("<color=#b00>Blood Moon Accumulation: <color=#d00>Disabled");
+            }
 
 			var existingCage = Core.SacrificeService.GetSacrificeCage();
 			if (existingCage == null)
 			{
 				ctx.Reply("<color=#b00>Cage Status: <color=#d00>No <color=#e00>sacrifice <color=#f00>altar <color=#e00>has <color=#d00>been <color=#b00>placed ");
 				return;
-			} 
+			}
 
 			if (Core.SacrificeService.IsInLockout(out int daysRemaining))
             {
