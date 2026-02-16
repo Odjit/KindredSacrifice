@@ -411,66 +411,65 @@ internal class SacrificeService
         return activeCage != null && activeCage.Entity == entity;
     }
 
-    int GetCurrentDay()
+    bool TryGetDayNightCycleEntity(out Entity entity)
     {
+        entity = Entity.Null;
         var entities = default(NativeArray<Entity>);
         try
         {
-            var gameTimeModifiers = Core.ServerGameSettingsSystem._Settings.GameTimeModifiers;
-            var dayDuration = gameTimeModifiers.DayDurationInSeconds;
-
             entities = dayNightCycleQuery.ToEntityArray(Allocator.Temp);
-
-            var currentDay = -1;
-            foreach (var entity in entities)
+            foreach (var e in entities)
             {
-                if (entity.Has<DayNightCycle>())
+                if (e.Has<DayNightCycle>())
                 {
-                    var cycle = entity.Read<DayNightCycle>();
-                    var totalTime = cycle.Time;
-                    currentDay = (int)Math.Floor(totalTime / dayDuration);
-                    break;
+                    entity = e;
+                    return true;
                 }
             }
+        }
+        finally
+        {
+            if (entities.IsCreated) entities.Dispose();
+        }
+        return false;
+    }
 
-            return currentDay;
+    int GetCurrentDay(Entity entity)
+    {
+        var dayDuration = Core.ServerGameSettingsSystem._Settings.GameTimeModifiers.DayDurationInSeconds;
+        var cycle = entity.Read<DayNightCycle>();
+        return (int)Math.Floor(cycle.Time / dayDuration);
+    }
+
+    int GetCurrentDay()
+    {
+        try
+        {
+            if (!TryGetDayNightCycleEntity(out var entity)) return -1;
+            return GetCurrentDay(entity);
         }
         catch (Exception ex)
         {
             Core.LogException(ex, nameof(GetCurrentDay));
             return -1;
         }
-        finally
-        {
-            if (entities.IsCreated) entities.Dispose();
-        }
     }
 
     public bool IsBloodMoonActive()
     {
-        var entities = default(NativeArray<Entity>);
         try
         {
-            entities = dayNightCycleQuery.ToEntityArray(Allocator.Temp);
-            foreach (var entity in entities)
-            {
-                if (entity.Has<DayNightCycle>())
-                {
-                    var cycle = entity.Read<DayNightCycle>();
-                    var currentDay = GetCurrentDay();
-                    // Block on blood moon day and the following day (night runs past midnight)
-                    return currentDay >= 0 &&
-                           (currentDay == cycle.NextBloodMoonDay || currentDay == cycle.NextBloodMoonDay + 1);
-                }
-            }
+            if (!TryGetDayNightCycleEntity(out var entity)) return false;
+
+            var cycle = entity.Read<DayNightCycle>();
+            var currentDay = GetCurrentDay(entity);
+            // Block on blood moon day and the following day (night runs past midnight)
+            return currentDay >= 0 &&
+                   (currentDay == cycle.NextBloodMoonDay || currentDay == cycle.NextBloodMoonDay + 1);
         }
         catch (Exception ex)
         {
             Core.LogException(ex, nameof(IsBloodMoonActive));
-        }
-        finally
-        {
-            if (entities.IsCreated) entities.Dispose();
         }
         return false;
     }
@@ -755,79 +754,54 @@ internal class SacrificeService
         }
     }
 
+    bool BloodMoonRisesTonight(Entity entity)
+    {
+        var gameTimeModifiers = Core.ServerGameSettingsSystem._Settings.GameTimeModifiers;
+        var cycle = entity.Read<DayNightCycle>();
+        var now = cycle.GameDateTimeNow;
+
+        var dayEndInMinutes = gameTimeModifiers.DayEndHour * 60 + gameTimeModifiers.DayEndMinute;
+        var currentTimeInMinutes = now.Hour * 60 + now.Minute;
+
+        // Before evening (PreDawn or DayTime) = tonight, Evening = tomorrow night
+        return currentTimeInMinutes < dayEndInMinutes;
+    }
+
     bool BloodMoonRisesTonight()
     {
-        var entities = default(NativeArray<Entity>);
         try
         {
-            var gameTimeModifiers = Core.ServerGameSettingsSystem._Settings.GameTimeModifiers;
-            entities = dayNightCycleQuery.ToEntityArray(Allocator.Temp);
-
-            foreach (var entity in entities)
-            {
-                if (entity.Has<DayNightCycle>())
-                {
-                    var cycle = entity.Read<DayNightCycle>();
-                    var now = cycle.GameDateTimeNow;
-
-                    var dayEndHour = gameTimeModifiers.DayEndHour;
-                    var dayEndMinute = gameTimeModifiers.DayEndMinute;
-                    var currentTimeInMinutes = now.Hour * 60 + now.Minute;
-                    var dayEndInMinutes = dayEndHour * 60 + dayEndMinute;
-
-                    // Before evening (PreDawn or DayTime) = tonight, Evening = tomorrow night
-                    return currentTimeInMinutes < dayEndInMinutes;
-                }
-            }
+            if (!TryGetDayNightCycleEntity(out var entity)) return true;
+            return BloodMoonRisesTonight(entity);
         }
         catch (Exception ex)
         {
             Core.LogException(ex, nameof(BloodMoonRisesTonight));
-        }
-        finally
-        {
-            if (entities.IsCreated) entities.Dispose();
         }
         return true;
     }
 
     void SetNextBloodMoon()
     {
-        var entities = default(NativeArray<Entity>);
         try
         {
-            var gameTimeModifiers = Core.ServerGameSettingsSystem._Settings.GameTimeModifiers;
-            var dayDuration = gameTimeModifiers.DayDurationInSeconds;
+            if (!TryGetDayNightCycleEntity(out var entity)) return;
 
-            entities = dayNightCycleQuery.ToEntityArray(Allocator.Temp);
+            var dayDuration = Core.ServerGameSettingsSystem._Settings.GameTimeModifiers.DayDurationInSeconds;
+            var cycle = entity.Read<DayNightCycle>();
+            var currentDay = (int)System.Math.Floor(cycle.Time / dayDuration);
 
-            foreach (var entity in entities)
-            {
-                if (entity.Has<DayNightCycle>())
-                {
-                    var cycle = entity.Read<DayNightCycle>();
+            var tonight = BloodMoonRisesTonight(entity);
+            var targetDay = tonight ? currentDay : currentDay + 1;
 
-                    var totalTime = cycle.Time;
-                    var currentDay = (int)System.Math.Floor(totalTime / dayDuration);
+            cycle.NextBloodMoonDay = targetDay;
+            entity.Write(cycle);
 
-                    var tonight = BloodMoonRisesTonight();
-                    var targetDay = tonight ? currentDay : currentDay + 1;
-
-                    cycle.NextBloodMoonDay = targetDay;
-                    entity.Write(cycle);
-
-                    Core.Log.LogInfo($"Blood moon scheduled for day {targetDay} ({(tonight ? "tonight" : "tomorrow night")})");
-                    break;
-                }
-            }
+            Core.Log.LogInfo($"Blood moon scheduled for day {targetDay} ({(tonight ? "tonight" : "tomorrow night")})");
         }
         catch (Exception ex)
         {
             Core.LogException(ex, nameof(SetNextBloodMoon));
-        }
-        finally
-        {
-            if (entities.IsCreated) entities.Dispose();
         }
     }
 
