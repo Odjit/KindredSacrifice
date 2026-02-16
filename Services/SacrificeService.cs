@@ -799,23 +799,14 @@ internal class SacrificeService
 
                     var totalTime = cycle.Time;
                     var currentDay = (int)System.Math.Floor(totalTime / dayDuration);
-                    var now = cycle.GameDateTimeNow;
 
-                    var dayStartHour = gameTimeModifiers.DayStartHour;
-                    var dayStartMinute = gameTimeModifiers.DayStartMinute;
-                    var dayEndHour = gameTimeModifiers.DayEndHour;
-                    var dayEndMinute = gameTimeModifiers.DayEndMinute;
-                    var currentTimeInMinutes = now.Hour * 60 + now.Minute;
-                    var dayStartInMinutes = dayStartHour * 60 + dayStartMinute;
-                    var dayEndInMinutes = dayEndHour * 60 + dayEndMinute;
-                    var isDay = currentTimeInMinutes >= dayStartInMinutes && currentTimeInMinutes < dayEndInMinutes;
-
-                    var targetDay = isDay ? currentDay : currentDay + 1;
+					var tonight = BloodMoonRisesTonight();
+                    var targetDay = tonight ? currentDay : currentDay + 1;
 
                     cycle.NextBloodMoonDay = targetDay;
                     entity.Write(cycle);
 
-                    Core.Log.LogInfo($"Blood moon scheduled for day {targetDay} ({(isDay ? "tonight" : "tomorrow night")})");
+                    Core.Log.LogInfo($"Blood moon scheduled for day {targetDay} ({(tonight ? "tonight" : "tomorrow night")})");
                     break;
                 }
             }
@@ -872,7 +863,7 @@ internal class SacrificeService
             }
         }
 
-        Core.BuffService.ApplyBuff(Entity.Null, prisonerEntity, Prefabs.Buff_General_Ignite, 6f);
+        Core.BuffService.ApplyBuff(Entity.Null, prisonerEntity, Prefabs.Buff_General_Ignite, -1f);
 
         if (!prisonerEntity.Has<Health>())
         {
@@ -895,7 +886,7 @@ internal class SacrificeService
             prisonerHealth.Value = Math.Max(0, prisonerHealth.Value - damagePerStrike);
             prisonerEntity.Write(prisonerHealth);
 
-            var waitTime = 1f;
+            var waitTime = 1.5f;
             var elapsed = 0f;
             while (elapsed < waitTime)
             {

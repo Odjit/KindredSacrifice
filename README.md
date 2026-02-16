@@ -1,68 +1,62 @@
-![](logo.png)
-# KindredSacrifice for V Rising
+# KindredSacrifice
 
-KindredSacrifice is a server modification for V Rising that adds a blood sacrifice system with a ritual, blood moon mechanics, and bloodtype based rewards. This gives players something else do to with additional prisoners.
-- **Ritual Sacrifice Cage**: Spawn a sacrifice altar wherever you choose.
-- **Blood Moon Accumulator**: Sacrifices contribute to triggering blood moons based on quality
-- **Blood Rewards**: Get unique rewards for 100% quality sacrifices based on blood type
-- **Blood Moon Lockout**: Prevent sacrifices for configurable nights after triggering a blood moon
+<p align="center"><em>Offer the living, awaken the altar.</em></p>
+<p align="center">
+<a href="https://www.youtube.com/watch?v=ENx_fQuE6OI">
+  <img src="logo.png" width="320" alt="Watch the trailer" />
+    </a>
+</p>
 
-Feel free to reach out to me on Discord (odjit) if you have any questions or need help with the mod.
+<p align="center">
+  Server-side blood sacrifice rituals for V Rising: sacrifice prisoners, build blood moon progress, and earn blood-type rewards.
+</p>
+<hr>
+
+## Features
+
+• **Ritual Sacrifice Cage** lets you place a ritual altar anywhere.  
+• **Blood Moon Progression** means sacrifices build toward a blood moon, with quality heavily rewarded.  
+• **Blood-Type Rewards** grant unique bonuses for 100% sacrifices.  
+• **Lockout Control** enforces a configurable cooldown after a blood moon.
+
+
+<p align="right"><sub>Questions? Ping <b>odjit</b> on Discord.</sub></p>
+
 
 ## Commands
 
-### Core Commands
-- `.sacrifice place`
-  - Spawn the sacrifice cage at your cursor position. Only one sacrifice cage can exist at a time. (admin only)
-- `.sacrifice goto`
-  - Teleport to the sacrifice cage (admin only)
-  - Shortcut: `.sac g`
-- `.sacrifice remove`
-  - Remove the sacrifice cage (admin only)
-- `.sacrifice status`
-  - Check blood moon progress and lockout status
-- `.sacrifice reload`
-  - Reload the sacrifice configuration (admin only)
+### General Commands
+
+| Command | Description |
+|---|---|
+| `.sacrifice place` | Spawn the sacrifice cage at your cursor position. Only one cage may exist at a time. (Admin Only) |
+| `.sacrifice goto` | Teleport to the sacrifice cage. Shortcut: `.sac g`  (Admin Only)|
+| `.sacrifice remove` | Remove the sacrifice cage. (Admin Only) |
+| `.sacrifice reload` | Reload the sacrifice configuration. (Admin Only) |
+| `.sacrifice status` | Show blood moon progress and lockout status. (Player Command) |
+
+---
+
+### Settings Commands (Admin Only)
+
+| Command | Description |
+|---|---|
+| `.sacrifice settings` | Show global settings and reward summary. |
+| `.sacrifice reward <bloodType>` | Show reward details for a blood type. Shortcut: `.sac r warrior` |
+| `.sacrifice setmessages <true\|false>` | Toggle sacrifice messages. Shortcut: `.sac sm true` |
+| `.sacrifice setaccumulation` | Toggle lower-quality blood contributing to blood moon progress. |
+| `.sacrifice setlockout <nights>` | Set blood moon lockout nights (minimum 2). Shortcut: `.sac sl 3` |
+| `.sacrifice setrewardtype <bloodType> <rewardType>` | Set reward type (None, BloodMoon, Buff, DropItems, DropBloodMerlots). |
+| `.sacrifice setbuff <bloodType> <prefabGuid> [duration]` | Configure buff reward. Duration defaults to 3600 seconds. |
+| `.sacrifice setmerlot <bloodType> <quality\|prisoner> <min> <max> [type\|prisoner]` | Configure merlot drops. |
+| `.sacrifice adddrop <bloodType> <prefabGuid> [min] [max]` | Add an item drop. |
+| `.sacrifice removedrop <bloodType> <index>` | Remove an item drop by 1-based index. |
+| `.sacrifice cleardrops <bloodType>` | Clear all item drops from a blood type. |
 
 
-### Settings Commands (admin only)
-- `.sacrifice settings`
-  - Show global settings and reward type summary 
-- `.sacrifice reward <bloodType>`
-  - Show full reward details for a blood type 
-  - Shortcut: `.sac r warrior`
-- `.sacrifice setmessages <true|false>`
-  - Toggle sacrifice messages on/off 
-  - Shortcut: `.sac sm true`
-- `.sacrifice setlockout <nights>`
-  - Set blood moon lockout nights, minimum 2 
-  - Shortcut: `.sac sl 3`
-- `.sacrifice setrewardtype <bloodType> <rewardType>`
-  - Set reward type for a blood type 
-  - Reward types: None, BloodMoon, Buff, DropItems, DropBloodMerlots
-  - Shortcut: `.sac srt warrior Buff`
-- `.sacrifice setbuff <bloodType> <prefabGuid> [duration]`
-  - Set buff reward for a blood type 
-  - Duration defaults to 3600 seconds
-  - Shortcut: `.sac sb warrior -1006733024 7200`
-- `.sacrifice setmerlot <bloodType> <quality|prisoner> <min> <max> [type|prisoner]`
-  - Set merlot drop config for a blood type 
-  - Quality: 0-100 or "prisoner" to use prisoner's quality
-  - Type: blood type name or "prisoner" to use prisoner's type (default)
-  - Shortcut: `.sac smer warrior prisoner 2 5` or `.sac smer scholar 100 3 6 Warrior`
-- `.sacrifice adddrop <bloodType> <prefabGuid> [min] [max]`
-  - Add an item drop to a blood type 
-  - Min/max default to 1
-  - Shortcut: `.sac ad creature 28358550 5 10`
-- `.sacrifice removedrop <bloodType> <index>`
-  - Remove an item drop by index, 1-based 
-  - Shortcut: `.sac rd creature 1`
-- `.sacrifice cleardrops <bloodType>`
-  - Clear all item drops from a blood type 
-  - Shortcut: `.sac cd creature`
 
+## How to use
 
-## Usage
 
 1. Spawn the sacrifice cage with `.sac place` while aiming at the ground
 2. Perform a sacrifice by bringing a dominated prisoner to the altar cage.
@@ -70,38 +64,39 @@ Feel free to reach out to me on Discord (odjit) if you have any questions or nee
 4. The sacrifice will automatically trigger.
 
 ### Blood Quality & Rewards
-What happens based on blood quality:
 
-- **100% Quality (Perfect Sacrifice)**:
-  - Blood type-specific reward (buff, items, or merlots)
-  - 10,000 points to blood moon (triggers immediately)
+**100% Quality**  
+Immediate blood moon and blood type based rewards.
 
-- **Below 100% (Regular Sacrifice)**:
-  - NO blood type-specific reward
-  - Points to blood moon accumulator (scaled by quality)
+**Below 100%**  
+No rewards. Progress only to accumulator.
 
-### Blood Moon Accumulator
 
-The blood moon accumulator uses squared scaling:
-- 100% quality → 10,000 points (instant blood moon)
-- 71% quality → 5,000 points (need 2 to trigger)
-- 50% quality → 2,500 points (need 4 to trigger)
-- 25% quality → 625 points (need 16 to trigger)
-- 5% quality → 25 points (need 400 to trigger)
+### Blood Moon Accumulator 
 
-This heavily rewards high-quality sacrifices.
+The blood moon accumulator uses squared scaling, heavily rewarding high-quality sacrifices:
 
-**When accumulated points reach 10,000:**
+| Blood Quality | Points Gained | Sacrifices |
+|---------------|--------------|-------------------|
+| 100% | 10,000 | 1 |
+| 71%  | 5,000  | 2 |
+| 50%  | 2,500  | 4 |
+| 25%  | 625    | 16 |
+| 5%   | 25     | 400 |
 
-1. A blood moon is triggered for the current/next night
-2. The accumulator is reset to 0
-3. Sacrifices are locked out for X nights (configurable, default: 3)
+
+
+When total progress reaches **10,000 points**:
+
+1. A blood moon is scheduled for the current or next night.
+2. The accumulator resets to 0.
+3. Sacrifices enter lockout for a configurable number of nights (default: 3).
 
 **During Lockout:**
 - No prisoner is able to be added to the cage
 - Use `.sac status` to check remaining lockout time
 
-
+---
 ## Configuration
 
 Configuration file is located in `BepInEx/config/KindredSacrifice/`. 
@@ -167,7 +162,7 @@ I advise using in-game commands in order to not cause json errors.
 }
 ```
 </details>
-
+<hr>
 
 ## Installation
 
