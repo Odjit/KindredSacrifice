@@ -22,12 +22,15 @@ public static class InteractWithPrisonerPatch
 			return;
 		}
 
+		var entities = default(NativeArray<Entity>);
+		var fromCharacters = default(NativeArray<FromCharacter>);
+		var prisonerEvents = default(NativeArray<InteractWithPrisonerEvent>);
 		try
 		{
 			var query = __instance._EventQuery;
-			var entities = query.ToEntityArray(Allocator.Temp);
-			var fromCharacters = query.ToComponentDataArray<FromCharacter>(Allocator.Temp);
-			var prisonerEvents = query.ToComponentDataArray<InteractWithPrisonerEvent>(Allocator.Temp);
+			entities = query.ToEntityArray(Allocator.Temp);
+			fromCharacters = query.ToComponentDataArray<FromCharacter>(Allocator.Temp);
+			prisonerEvents = query.ToComponentDataArray<InteractWithPrisonerEvent>(Allocator.Temp);
 
 			for (var i = 0; i < entities.Length; i++)
 			{
@@ -60,14 +63,16 @@ public static class InteractWithPrisonerPatch
 					}
 				}
 			}
-
-			entities.Dispose();
-			fromCharacters.Dispose();
-			prisonerEvents.Dispose();
 		}
 		catch (Exception ex)
 		{
 			Core.LogException(ex, nameof(InteractWithPrisonerPatch));
+		}
+		finally
+		{
+			if (entities.IsCreated) entities.Dispose();
+			if (fromCharacters.IsCreated) fromCharacters.Dispose();
+			if (prisonerEvents.IsCreated) prisonerEvents.Dispose();
 		}
 	}
 

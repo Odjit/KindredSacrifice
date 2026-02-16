@@ -413,12 +413,13 @@ internal class SacrificeService
 
     int GetCurrentDay()
     {
+        var entities = default(NativeArray<Entity>);
         try
         {
             var gameTimeModifiers = Core.ServerGameSettingsSystem._Settings.GameTimeModifiers;
             var dayDuration = gameTimeModifiers.DayDurationInSeconds;
 
-            var entities = dayNightCycleQuery.ToEntityArray(Allocator.Temp);
+            entities = dayNightCycleQuery.ToEntityArray(Allocator.Temp);
 
             var currentDay = -1;
             foreach (var entity in entities)
@@ -432,8 +433,6 @@ internal class SacrificeService
                 }
             }
 
-            entities.Dispose();
-
             return currentDay;
         }
         catch (Exception ex)
@@ -441,30 +440,37 @@ internal class SacrificeService
             Core.LogException(ex, nameof(GetCurrentDay));
             return -1;
         }
+        finally
+        {
+            if (entities.IsCreated) entities.Dispose();
+        }
     }
 
     public bool IsBloodMoonActive()
     {
+        var entities = default(NativeArray<Entity>);
         try
         {
-            var entities = dayNightCycleQuery.ToEntityArray(Allocator.Temp);
+            entities = dayNightCycleQuery.ToEntityArray(Allocator.Temp);
             foreach (var entity in entities)
             {
                 if (entity.Has<DayNightCycle>())
                 {
                     var cycle = entity.Read<DayNightCycle>();
                     var currentDay = GetCurrentDay();
-                    entities.Dispose();
                     // Block on blood moon day and the following day (night runs past midnight)
                     return currentDay >= 0 &&
                            (currentDay == cycle.NextBloodMoonDay || currentDay == cycle.NextBloodMoonDay + 1);
                 }
             }
-            entities.Dispose();
         }
         catch (Exception ex)
         {
             Core.LogException(ex, nameof(IsBloodMoonActive));
+        }
+        finally
+        {
+            if (entities.IsCreated) entities.Dispose();
         }
         return false;
     }
@@ -751,10 +757,11 @@ internal class SacrificeService
 
     bool BloodMoonRisesTonight()
     {
+        var entities = default(NativeArray<Entity>);
         try
         {
             var gameTimeModifiers = Core.ServerGameSettingsSystem._Settings.GameTimeModifiers;
-            var entities = dayNightCycleQuery.ToEntityArray(Allocator.Temp);
+            entities = dayNightCycleQuery.ToEntityArray(Allocator.Temp);
 
             foreach (var entity in entities)
             {
@@ -768,28 +775,31 @@ internal class SacrificeService
                     var currentTimeInMinutes = now.Hour * 60 + now.Minute;
                     var dayEndInMinutes = dayEndHour * 60 + dayEndMinute;
 
-                    entities.Dispose();
                     // Before evening (PreDawn or DayTime) = tonight, Evening = tomorrow night
                     return currentTimeInMinutes < dayEndInMinutes;
                 }
             }
-            entities.Dispose();
         }
         catch (Exception ex)
         {
             Core.LogException(ex, nameof(BloodMoonRisesTonight));
+        }
+        finally
+        {
+            if (entities.IsCreated) entities.Dispose();
         }
         return true;
     }
 
     void SetNextBloodMoon()
     {
+        var entities = default(NativeArray<Entity>);
         try
         {
             var gameTimeModifiers = Core.ServerGameSettingsSystem._Settings.GameTimeModifiers;
             var dayDuration = gameTimeModifiers.DayDurationInSeconds;
 
-            var entities = dayNightCycleQuery.ToEntityArray(Allocator.Temp);
+            entities = dayNightCycleQuery.ToEntityArray(Allocator.Temp);
 
             foreach (var entity in entities)
             {
@@ -800,7 +810,7 @@ internal class SacrificeService
                     var totalTime = cycle.Time;
                     var currentDay = (int)System.Math.Floor(totalTime / dayDuration);
 
-					var tonight = BloodMoonRisesTonight();
+                    var tonight = BloodMoonRisesTonight();
                     var targetDay = tonight ? currentDay : currentDay + 1;
 
                     cycle.NextBloodMoonDay = targetDay;
@@ -810,11 +820,14 @@ internal class SacrificeService
                     break;
                 }
             }
-            entities.Dispose();
         }
         catch (Exception ex)
         {
             Core.LogException(ex, nameof(SetNextBloodMoon));
+        }
+        finally
+        {
+            if (entities.IsCreated) entities.Dispose();
         }
     }
 
