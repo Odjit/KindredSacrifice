@@ -3,7 +3,7 @@
 <p align="center"><em>Offer the living, awaken the altar.</em></p>
 <p align="center">
 <a href="https://www.youtube.com/watch?v=ENx_fQuE6OI">
-  <img src="logo.png" width="320" alt="Watch the trailer" />
+  <img src="https://github.com/Odjit/KindredSacrifice/blob/main/logo.png?raw=true" width="320" alt="Watch the trailer" />
     </a>
 </p>
 
@@ -35,7 +35,6 @@
 | `.sacrifice reload` | Reload the sacrifice configuration. (Admin Only) |
 | `.sacrifice status` | Show blood moon progress and lockout status. (Player Command) |
 
----
 
 ### Settings Commands (Admin Only)
 
@@ -46,7 +45,7 @@
 | `.sacrifice setmessages <true\|false>` | Toggle sacrifice messages. Shortcut: `.sac sm true` |
 | `.sacrifice setaccumulation` | Toggle lower-quality blood contributing to blood moon progress. |
 | `.sacrifice setlockout <nights>` | Set blood moon lockout nights (minimum 2). Shortcut: `.sac sl 3` |
-| `.sacrifice setrewardtype <bloodType> <rewardType>` | Set reward type (None, BloodMoon, Buff, DropItems, DropBloodMerlots). |
+| `.sacrifice setrewardtype <bloodType> <rewardType>` | Set reward type (None, Buff, DropItems, DropBloodMerlots). |
 | `.sacrifice setbuff <bloodType> <prefabGuid> [duration]` | Configure buff reward. Duration defaults to 3600 seconds. |
 | `.sacrifice setmerlot <bloodType> <quality\|prisoner> <min> <max> [type\|prisoner]` | Configure merlot drops. |
 | `.sacrifice adddrop <bloodType> <prefabGuid> [min] [max]` | Add an item drop. |
@@ -56,7 +55,6 @@
 
 
 ## How to use
-
 
 1. Spawn the sacrifice cage with `.sac place` while aiming at the ground
 2. Perform a sacrifice by bringing a dominated prisoner to the altar cage.
@@ -96,7 +94,7 @@ When total progress reaches **10,000 points**:
 - No prisoner is able to be added to the cage
 - Use `.sac status` to check remaining lockout time
 
----
+
 ## Configuration
 
 Configuration file is located in `BepInEx/config/KindredSacrifice/`. 
@@ -162,7 +160,6 @@ I advise using in-game commands in order to not cause json errors.
 }
 ```
 </details>
-<hr>
 
 ## Installation
 
