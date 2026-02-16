@@ -140,26 +140,8 @@ internal class SacrificeSettings
 
     public Dictionary<string, SacrificeReward> BloodTypeRewards { get; set; } = new()
     {
-        { "Warrior", new SacrificeReward
-        {
-            RewardType = RewardType.DropBloodMerlots,
-            MerlotMinQuantity = 1,
-            MerlotMaxQuantity = 3,
-            UsePrisonerBloodType = true,
-            MerlotBloodType = "",
-            UsePrisonerQuality = true,
-            MerlotQuality = 100f
-        } },
-        { "Rogue", new SacrificeReward
-        {
-            RewardType = RewardType.DropBloodMerlots,
-            MerlotMinQuantity = 1,
-            MerlotMaxQuantity = 3,
-            UsePrisonerBloodType = true,
-            MerlotBloodType = "",
-            UsePrisonerQuality = true,
-            MerlotQuality = 100f
-        } },
+        { "Warrior", SacrificeReward.CreateDefaultMerlot() },
+        { "Rogue", SacrificeReward.CreateDefaultMerlot() },
         { "Brute", new SacrificeReward
         {
             RewardType = RewardType.Buff,
@@ -178,46 +160,10 @@ internal class SacrificeSettings
             BuffPrefabGuid = -1703886455, // AB_Interact_UseRelic_Behemoth_Buff
             BuffDuration = 3600,
         } },
-        { "Mutant", new SacrificeReward
-        {
-            RewardType = RewardType.DropBloodMerlots,
-            MerlotMinQuantity = 1,
-            MerlotMaxQuantity = 3,
-            UsePrisonerBloodType = true,
-            MerlotBloodType = "",
-            UsePrisonerQuality = true,
-            MerlotQuality = 100f
-        } },
-        { "Creature", new SacrificeReward
-        {
-            RewardType = RewardType.DropBloodMerlots,
-            MerlotMinQuantity = 1,
-            MerlotMaxQuantity = 3,
-            UsePrisonerBloodType = true,
-            MerlotBloodType = "",
-            UsePrisonerQuality = true,
-            MerlotQuality = 100f
-        } },
-        { "Corrupted", new SacrificeReward
-        {
-            RewardType = RewardType.DropBloodMerlots,
-            MerlotMinQuantity = 1,
-            MerlotMaxQuantity = 3,
-            UsePrisonerBloodType = true,
-            MerlotBloodType = "",
-            UsePrisonerQuality = true,
-            MerlotQuality = 100f
-        } },
-        { "Draculin", new SacrificeReward
-        {
-            RewardType = RewardType.DropBloodMerlots,
-            MerlotMinQuantity = 1,
-            MerlotMaxQuantity = 3,
-            UsePrisonerBloodType = true,
-            MerlotBloodType = "",
-            UsePrisonerQuality = true,
-            MerlotQuality = 100f
-        } }
+        { "Mutant", SacrificeReward.CreateDefaultMerlot() },
+        { "Creature", SacrificeReward.CreateDefaultMerlot() },
+        { "Corrupted", SacrificeReward.CreateDefaultMerlot() },
+        { "Draculin", SacrificeReward.CreateDefaultMerlot() }
     };
 }
 
@@ -249,7 +195,18 @@ internal class SacrificeReward
     public bool UsePrisonerBloodType { get; set; } = true;
     public string MerlotBloodType { get; set; } = "Warrior"; 
     public bool UsePrisonerQuality { get; set; } = true; 
-    public float MerlotQuality { get; set; } = 100f; 
+    public float MerlotQuality { get; set; } = 100f;
+
+	public static SacrificeReward CreateDefaultMerlot() => new()
+	{
+		RewardType = RewardType.DropBloodMerlots,
+		MerlotMinQuantity = 1,
+		MerlotMaxQuantity = 3,
+		UsePrisonerBloodType = true,
+		MerlotBloodType = "",
+		UsePrisonerQuality = true,
+		MerlotQuality = 100f
+	};
 }
 
 internal enum RewardType

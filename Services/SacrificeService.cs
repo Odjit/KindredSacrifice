@@ -137,10 +137,7 @@ internal class SacrificeService
             {
                 // Duplicate cage - destroy it
                 Core.Log.LogError($"Multiple sacrifice cages found! Destroying duplicate: {entity}");
-                if (Core.EntityManager.Exists(entity))
-                {
-                    DestroyUtility.Destroy(Core.EntityManager, entity);
-                }
+                TryDestroyAndClear(entity);
                 continue;
             }
 
@@ -212,10 +209,7 @@ internal class SacrificeService
         if (prefabGuid.GuidHash != expectedPrefab.GuidHash)
         {
             Core.Log.LogError($"{elementName} has wrong PrefabGUID ({prefabGuid.GuidHash} vs expected {expectedPrefab.GuidHash}). Destroying invalid entity.");
-            if (Core.EntityManager.Exists(entity))
-            {
-                DestroyUtility.Destroy(Core.EntityManager, entity);
-            }
+            TryDestroyAndClear(entity);
             return currentElement;
         }
 
@@ -236,19 +230,13 @@ internal class SacrificeService
         if (newDistance < existingDistance)
         {
             // New one is closer - destroy existing, keep new
-            if (Core.EntityManager.Exists(currentElement))
-            {
-                DestroyUtility.Destroy(Core.EntityManager, currentElement);
-            }
+            TryDestroyAndClear(currentElement);
             return entity;
         }
         else
         {
             // Existing is closer - destroy new one
-            if (Core.EntityManager.Exists(entity))
-            {
-                DestroyUtility.Destroy(Core.EntityManager, entity);
-            }
+            TryDestroyAndClear(entity);
             return currentElement;
         }
     }
@@ -351,38 +339,7 @@ internal class SacrificeService
                 cageEntity.Write(new Rotation { Value = quaternion.RotateY(math.radians(90 * (int)tileRot)) });
             }
 
-            if (cageEntity.Has<Immortal>())
-            {
-                var immortal = cageEntity.Read<Immortal>();
-                immortal.IsImmortal = true;
-                cageEntity.Write(immortal);
-            }
-            else
-            {
-                cageEntity.Add<Immortal>();
-                cageEntity.Write(new Immortal { IsImmortal = true });
-            }
-
-            if (cageEntity.Has<EditableTileModel>())
-            {
-                var editable = cageEntity.Read<EditableTileModel>();
-                editable.CanDismantle = false;
-                editable.CanMoveAfterBuild = false;
-                editable.CanRotateAfterBuild = false;
-                cageEntity.Write(editable);
-            }
-
-            // Add NameableInteractable component with encoded world state
-            if (!cageEntity.Has<NameableInteractable>())
-            {
-                cageEntity.Add<NameableInteractable>();
-            }
-
-            cageEntity.Write(new NameableInteractable
-            {
-                Name = new FixedString64Bytes(EncodeCageName(Core.ConfigService.WorldState.AccumulatedBloodPoints))
-            });
-
+            MakeImmortalAndNonDismantleable(cageEntity, EncodeCageName(Core.ConfigService.WorldState.AccumulatedBloodPoints));
 
             var mapIconEntity = CreateMapIcon(cagePosition);
 
@@ -511,7 +468,7 @@ internal class SacrificeService
         try
         {
             var sacrificerEntity = ownerUserEntity;
-			var sacrificerName = sacrificerEntity != Entity.Null && entityManager.Exists(sacrificerEntity) && sacrificerEntity.Has<User>()
+			var sacrificerName = sacrificerEntity.ExistsAndValid() && sacrificerEntity.Has<User>()
 				? sacrificerEntity.Read<User>().CharacterName.ToString()
 				: "Unknown";
 			var bloodContribution = (bloodQuality / 100f) * (bloodQuality / 100f) * 10000f;
@@ -566,7 +523,7 @@ internal class SacrificeService
                     ServerChatUtils.SendSystemMessageToAllClients(entityManager, ref globalMessage);
                 }
 
-                if (sacrificerEntity != Entity.Null && entityManager.Exists(sacrificerEntity) && sacrificerEntity.Has<User>())
+                if (sacrificerEntity.ExistsAndValid() && sacrificerEntity.Has<User>())
                 {
                     var user = sacrificerEntity.Read<User>();
                     FixedString512Bytes message;
@@ -813,29 +770,27 @@ internal class SacrificeService
 
     IEnumerator PerformSacrificeSequence(Entity cageEntity, Entity prisonerEntity, Entity ownerUserEntity, float bloodQuality, int roundedQuality, PrefabGUID bloodType)
     {
-        var entityManager = Core.EntityManager;
-
         var ritualElements = GetRitualElements(cageEntity);
 
         if (roundedQuality == 100)
         {
             // 100 sacrifice
-            if (ritualElements.Table != Entity.Null && entityManager.Exists(ritualElements.Table))
+            if (ritualElements.Table.ExistsAndValid())
             {
                 Core.BuffService.ApplyBuff(Entity.Null, ritualElements.Table, Prefabs.Buff_PerfectSacrifice_Table, -1);
             }
 
-            if (cageEntity != Entity.Null && entityManager.Exists(cageEntity))
+            if (cageEntity.ExistsAndValid())
             {
                 Core.BuffService.ApplyBuff(Entity.Null, cageEntity, Prefabs.Buff_PerfectSacrifice_Cage, -1);
                 Core.BuffService.ApplyBuff(Entity.Null, cageEntity, Prefabs.Buff_PerfectSacrifice_BloodRain, -1);
             }
 
             // Apply buff to sacrificer
-            if (ownerUserEntity != Entity.Null && entityManager.Exists(ownerUserEntity))
+            if (ownerUserEntity.ExistsAndValid())
             {
                 var charEntity = ownerUserEntity.GetCharacter();
-                if (charEntity != Entity.Null && entityManager.Exists(charEntity))
+                if (charEntity.ExistsAndValid())
                 {
                     Core.BuffService.ApplyBuff(ownerUserEntity, charEntity, Prefabs.Buff_PerfectSacrifice_Players, -1);
                 }
@@ -844,7 +799,7 @@ internal class SacrificeService
         else
         {
             // Regular sacrifice
-            if (ritualElements.Brazier != Entity.Null && entityManager.Exists(ritualElements.Brazier))
+            if (ritualElements.Brazier.ExistsAndValid())
             {
                 Core.BuffService.ApplyBuff(Entity.Null, ritualElements.Brazier, Prefabs.Buff_SacrificeFlames, -1);
             }
@@ -864,7 +819,7 @@ internal class SacrificeService
 
         for (int i = 0; i < numStrikes; i++)
         {
-            if (!entityManager.Exists(prisonerEntity))
+            if (!prisonerEntity.ExistsAndValid())
             {
                 break;
             }
@@ -882,7 +837,7 @@ internal class SacrificeService
             }
         }
 
-        if (entityManager.Exists(prisonerEntity))
+        if (prisonerEntity.ExistsAndValid())
         {
             prisonerHealth = prisonerEntity.Read<Health>();
             prisonerHealth.Value = 0;
@@ -892,7 +847,7 @@ internal class SacrificeService
             yield return null;
             yield return null;
 
-            DestroyUtility.Destroy(entityManager, prisonerEntity, DestroyDebugReason.TryRemoveBuff);
+            DestroyUtility.Destroy(Core.EntityManager, prisonerEntity, DestroyDebugReason.TryRemoveBuff);
         }
 
         var cooldownTime = 2f;
@@ -905,21 +860,21 @@ internal class SacrificeService
 
         if (roundedQuality == 100)
         {
-            if (ritualElements.Table != Entity.Null && entityManager.Exists(ritualElements.Table))
+            if (ritualElements.Table.ExistsAndValid())
             {
                 Core.BuffService.RemoveBuff(ritualElements.Table, Prefabs.Buff_PerfectSacrifice_Table);
             }
-            if (cageEntity != Entity.Null && entityManager.Exists(cageEntity))
+            if (cageEntity.ExistsAndValid())
             {
                 Core.BuffService.RemoveBuff(cageEntity, Prefabs.Buff_PerfectSacrifice_Cage);
                 Core.BuffService.RemoveBuff(cageEntity, Prefabs.Buff_PerfectSacrifice_BloodRain);
             }
 
             // Remove buff from sacrificer
-            if (ownerUserEntity != Entity.Null && entityManager.Exists(ownerUserEntity))
+            if (ownerUserEntity.ExistsAndValid())
             {
                 var charEntity = ownerUserEntity.GetCharacter();
-                if (charEntity != Entity.Null && entityManager.Exists(charEntity))
+                if (charEntity.ExistsAndValid())
                 {
                     Core.BuffService.RemoveBuff(charEntity, Prefabs.Buff_PerfectSacrifice_Players);
                 }
@@ -927,7 +882,7 @@ internal class SacrificeService
         }
         else
         {
-            if (ritualElements.Brazier != Entity.Null && entityManager.Exists(ritualElements.Brazier))
+            if (ritualElements.Brazier.ExistsAndValid())
             {
                 Core.BuffService.RemoveBuff(ritualElements.Brazier, Prefabs.Buff_SacrificeFlames);
             }
@@ -1015,7 +970,7 @@ internal class SacrificeService
     {
         try
         {
-            if (mapIconEntity == Entity.Null || !Core.EntityManager.Exists(mapIconEntity))
+            if (!mapIconEntity.ExistsAndValid())
             {
                 return;
             }
@@ -1025,10 +980,7 @@ internal class SacrificeService
                 var attachedBuffer = Core.EntityManager.GetBuffer<AttachedBuffer>(mapIconEntity);
                 foreach (var attached in attachedBuffer)
                 {
-                    if (Core.EntityManager.Exists(attached.Entity))
-                    {
-                        DestroyUtility.Destroy(Core.EntityManager, attached.Entity);
-                    }
+                    TryDestroyAndClear(attached.Entity);
                 }
             }
 

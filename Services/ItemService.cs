@@ -20,6 +20,13 @@ internal class ItemService
 		return entity;
 	}
 
+	void WithDropProxy(float3 position, Action<Entity> action)
+	{
+		var proxy = CreateDropProxy(position);
+		try { action(proxy); }
+		finally { DestroyUtility.Destroy(Core.EntityManager, proxy); }
+	}
+
 	public void DropItemWithModification(PrefabGUID itemPrefab, float3 dropPosition, int quantity = 1, Action<Entity> modifyItem = null)
 	{
 		var entityManager = Core.EntityManager;
@@ -38,15 +45,10 @@ internal class ItemService
 			var itemEntity = itemData.Entity;
 			modifyItem?.Invoke(itemEntity);
 
-			var proxy = CreateDropProxy(dropPosition);
-			try
+			WithDropProxy(dropPosition, proxy =>
 			{
 				InventoryUtilitiesServer.CreateDropItem(entityManager, proxy, itemPrefab, quantity, new Entity());
-			}
-			finally
-			{
-				DestroyUtility.Destroy(entityManager, proxy);
-			}
+			});
 		}
 		catch (Exception ex)
 		{
@@ -61,8 +63,7 @@ internal class ItemService
 
 		try
 		{
-			var proxy = CreateDropProxy(dropPosition);
-			try
+			WithDropProxy(dropPosition, proxy =>
 			{
 				foreach (var itemDrop in itemDrops)
 				{
@@ -81,11 +82,7 @@ internal class ItemService
 
 					logger.LogInfo($"Item drop reward: {quantity}x {itemGuid.LookupName()}");
 				}
-			}
-			finally
-			{
-				DestroyUtility.Destroy(entityManager, proxy);
-			}
+			});
 		}
 		catch (Exception ex)
 		{
@@ -122,18 +119,13 @@ internal class ItemService
 			};
 			entityManager.SetComponentData(itemEntity, storedBlood);
 
-			var proxy = CreateDropProxy(dropPosition);
-			try
+			WithDropProxy(dropPosition, proxy =>
 			{
 				for (int i = 0; i < quantity; i++)
 				{
 					InventoryUtilitiesServer.CreateDropItem(entityManager, proxy, BloodMerlotPrefab, 1, new Entity());
 				}
-			}
-			finally
-			{
-				DestroyUtility.Destroy(entityManager, proxy);
-			}
+			});
 
 			logger.LogInfo($"Reward dropped: {quantity} blood merlots of {bloodType.GuidHash} @ {bloodQuality}%");
 		}

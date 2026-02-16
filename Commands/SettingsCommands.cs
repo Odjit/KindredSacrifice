@@ -59,20 +59,7 @@ internal class SettingsCommands
 	[Command("reward", "r", description: "Show full reward details for a blood type (read-only)", adminOnly: true)]
 	public static void ShowReward(ChatCommandContext ctx, string bloodType)
 	{
-		var guid = BloodTypeMapping.GetGuid(bloodType);
-		if (guid == 0)
-		{
-			ctx.Reply("<color=#f44>Unknown blood type.</color> <color=#c24>Valid: Warrior, Rogue, Brute, Scholar, Worker, Mutant, Creature, Corrupted, Draculin</color>");
-			return;
-		}
-
-		var name = BloodTypeMapping.GetName(guid);
-		var rewards = Core.ConfigService.Settings.BloodTypeRewards;
-		if (!rewards.TryGetValue(name, out var reward))
-		{
-			ctx.Reply($"<color=#f44>{name}:</color> <color=#c24>No reward configured.</color>");
-			return;
-		}
+		if (!TryGetExistingReward(ctx, bloodType, out var name, out var reward)) return;
 
 		ctx.Reply($"<color=#f44>{name}</color> <color=#c24>- Type: {reward.RewardType}</color>");
 
@@ -239,20 +226,7 @@ internal class SettingsCommands
 	[Command("removedrop", "rd", description: "Remove an item drop by index (1-based)", adminOnly: true)]
 	public static void RemoveDrop(ChatCommandContext ctx, string bloodType, int index)
 	{
-		var guid = BloodTypeMapping.GetGuid(bloodType);
-		if (guid == 0)
-		{
-			ctx.Reply("<color=#f44>Unknown blood type.</color> <color=#c24>Valid: Warrior, Rogue, Brute, Scholar, Worker, Mutant, Creature, Corrupted, Draculin</color>");
-			return;
-		}
-
-		var name = BloodTypeMapping.GetName(guid);
-		var rewards = Core.ConfigService.Settings.BloodTypeRewards;
-		if (!rewards.TryGetValue(name, out var reward))
-		{
-			ctx.Reply($"<color=#f44>{name}:</color> <color=#c24>No reward configured.</color>");
-			return;
-		}
+		if (!TryGetExistingReward(ctx, bloodType, out var name, out var reward)) return;
 
 		if (index < 1 || index > reward.ItemDrops.Count)
 		{
@@ -271,20 +245,7 @@ internal class SettingsCommands
 	[Command("cleardrops", "cd", description: "Clear all item drops from a blood type", adminOnly: true)]
 	public static void ClearDrops(ChatCommandContext ctx, string bloodType)
 	{
-		var guid = BloodTypeMapping.GetGuid(bloodType);
-		if (guid == 0)
-		{
-			ctx.Reply("<color=#f44>Unknown blood type.</color> <color=#c24>Valid: Warrior, Rogue, Brute, Scholar, Worker, Mutant, Creature, Corrupted, Draculin</color>");
-			return;
-		}
-
-		var name = BloodTypeMapping.GetName(guid);
-		var rewards = Core.ConfigService.Settings.BloodTypeRewards;
-		if (!rewards.TryGetValue(name, out var reward))
-		{
-			ctx.Reply($"<color=#f44>{name}:</color> <color=#c24>No reward configured.</color>");
-			return;
-		}
+		if (!TryGetExistingReward(ctx, bloodType, out var name, out var reward)) return;
 
 		var count = reward.ItemDrops.Count;
 		reward.ItemDrops.Clear();
@@ -292,16 +253,36 @@ internal class SettingsCommands
 		ctx.Reply($"<color=#f44>Cleared</color> <color=#c24>{count} item drops from {name}.</color>");
 	}
 
-	static SacrificeReward GetOrCreateReward(ChatCommandContext ctx, string bloodType)
+	static bool TryResolveBloodType(ChatCommandContext ctx, string bloodType, out string name)
 	{
 		var guid = BloodTypeMapping.GetGuid(bloodType);
 		if (guid == 0)
 		{
+			name = null;
 			ctx.Reply("<color=#f44>Unknown blood type.</color> <color=#c24>Valid: Warrior, Rogue, Brute, Scholar, Worker, Mutant, Creature, Corrupted, Draculin</color>");
-			return null;
+			return false;
 		}
+		name = BloodTypeMapping.GetName(guid);
+		return true;
+	}
 
-		var name = BloodTypeMapping.GetName(guid);
+	static bool TryGetExistingReward(ChatCommandContext ctx, string bloodType, out string name, out SacrificeReward reward)
+	{
+		reward = null;
+		if (!TryResolveBloodType(ctx, bloodType, out name)) return false;
+
+		var rewards = Core.ConfigService.Settings.BloodTypeRewards;
+		if (!rewards.TryGetValue(name, out reward))
+		{
+			ctx.Reply($"<color=#f44>{name}:</color> <color=#c24>No reward configured.</color>");
+			return false;
+		}
+		return true;
+	}
+
+	static SacrificeReward GetOrCreateReward(ChatCommandContext ctx, string bloodType)
+	{
+		if (!TryResolveBloodType(ctx, bloodType, out var name)) return null;
 		var rewards = Core.ConfigService.Settings.BloodTypeRewards;
 		if (!rewards.TryGetValue(name, out var reward))
 		{
