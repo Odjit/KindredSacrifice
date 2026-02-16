@@ -142,7 +142,6 @@ internal class SacrificeService
             }
 
             var cagePosition = entity.Has<Translation>() ? entity.Read<Translation>().Value : float3.zero;
-            var mapIconEntity = CreateMapIcon(cagePosition);
 
             activeCage = new SacrificeCageData
             {
@@ -150,7 +149,6 @@ internal class SacrificeService
                 Position = cagePosition,
                 OwnerUserEntity = Entity.Null,
                 CreatedTime = DateTime.UtcNow,
-                MapIconEntity = mapIconEntity
             };
 
             // Restore world state from cage name
@@ -196,6 +194,10 @@ internal class SacrificeService
             else if (name == "KindredSacrifice_Table")
             {
                 ritualElements.Table = HandleFoundElement(entity, ritualElements.Table, referencePosition, "Table", Prefabs.TM_Castle_Module_Parent_RoundTable_3x3_Cabal01);
+            }
+            else if (name == "KindredSacrifice_MapIcon")
+            {
+                ritualElements.MapIcon = HandleFoundElement(entity, ritualElements.MapIcon, referencePosition, "MapIcon", Prefabs.MapIcon_ProxyObject_POI_Unknown);
             }
         }
 
@@ -245,7 +247,8 @@ internal class SacrificeService
     {
         return ritualElements.Pyre != Entity.Null ||
                ritualElements.Brazier != Entity.Null ||
-               ritualElements.Table != Entity.Null;
+               ritualElements.Table != Entity.Null ||
+               ritualElements.MapIcon != Entity.Null;
     }
 
     void DestroyRitualElements()
@@ -253,6 +256,8 @@ internal class SacrificeService
         ritualElements.Pyre = TryDestroyAndClear(ritualElements.Pyre);
         ritualElements.Brazier = TryDestroyAndClear(ritualElements.Brazier);
         ritualElements.Table = TryDestroyAndClear(ritualElements.Table);
+        DestroyMapIcon(ritualElements.MapIcon);
+        ritualElements.MapIcon = Entity.Null;
 	}
 
 	Entity SpawnRitualElement(PrefabGUID prefab, float3 position, Rotation rotation, string markerName)
@@ -286,6 +291,9 @@ internal class SacrificeService
 		if (ritualElements.Table == Entity.Null)
 			ritualElements.Table = SpawnRitualElement(Prefabs.TM_Castle_Module_Parent_RoundTable_3x3_Cabal01,
 				new float3(basePosition.x, basePosition.y, basePosition.z), rotation, "KindredSacrifice_Table");
+
+		if (ritualElements.MapIcon == Entity.Null)
+			ritualElements.MapIcon = CreateMapIcon(cageEntity.Read<Translation>().Value);
 	}
 
 	public Entity SpawnSacrificeCage(float3 cursorPosition, Entity ownerUserEntity, Entity charEntity)
@@ -341,15 +349,12 @@ internal class SacrificeService
 
             MakeImmortalAndNonDismantleable(cageEntity, EncodeCageName(Core.ConfigService.WorldState.AccumulatedBloodPoints));
 
-            var mapIconEntity = CreateMapIcon(cagePosition);
-
             activeCage = new SacrificeCageData
             {
                 Entity = cageEntity,
                 Position = cagePosition,
                 OwnerUserEntity = ownerUserEntity,
                 CreatedTime = DateTime.UtcNow,
-                MapIconEntity = mapIconEntity
             };
 
             EnsureRitualElements(cageEntity, cursorPosition);
@@ -957,6 +962,8 @@ internal class SacrificeService
                 }
             }
 
+            MakeImmortalAndNonDismantleable(proxyEntity, "KindredSacrifice_MapIcon");
+
             return proxyEntity;
         }
         catch (Exception ex)
@@ -1001,11 +1008,6 @@ internal class SacrificeService
                 return;
             }
 
-            if (activeCage.MapIconEntity != Entity.Null)
-            {
-                DestroyMapIcon(activeCage.MapIconEntity);
-            }
-
             DestroyRitualElements();
             activeCage = null;
         }
@@ -1027,7 +1029,6 @@ internal class SacrificeCageData
     public float3 Position { get; set; }
     public Entity OwnerUserEntity { get; set; }
     public DateTime CreatedTime { get; set; }
-    public Entity MapIconEntity { get; set; } = Entity.Null;
 }
 
 internal class RitualElements
@@ -1035,5 +1036,6 @@ internal class RitualElements
     public Entity Pyre { get; set; } = Entity.Null;
     public Entity Brazier { get; set; } = Entity.Null;
     public Entity Table { get; set; } = Entity.Null;
+    public Entity MapIcon { get; set; } = Entity.Null;
 }
 

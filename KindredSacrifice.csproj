@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<TargetFramework>net6.0</TargetFramework>
 		<AssemblyName>KindredSacrifice</AssemblyName>
@@ -10,6 +10,14 @@
 		<Authors>Odjit</Authors>
 		<BepInExPluginGuid>odjit.KindredSacrifice</BepInExPluginGuid>
 	</PropertyGroup>
+	<ItemGroup>
+	  <None Remove="LICENSE" />
+	</ItemGroup>
+	<ItemGroup>
+	  <EmbeddedResource Include="LICENSE">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </EmbeddedResource>
+	</ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="BepInEx.PluginInfoProps" Version="2.*" />
