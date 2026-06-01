@@ -504,7 +504,7 @@ internal class SacrificeService
                 }
             }
 
-            // Check is threshold is reached for blood type-specific reward
+            // Check if threshold is reached for blood type-specific reward
             var receivedBloodTypeReward = false;
             var bloodTypeName = BloodTypeMapping.GetName(bloodType.GuidHash);
 			var minRewardQuality = Core.ConfigService.Settings.MinimumRewardBloodQuality;
@@ -690,8 +690,12 @@ internal class SacrificeService
                     if (reward.ItemDrops != null && reward.ItemDrops.Count > 0)
                     {
                         var dropPos = GetDropPosition(cageEntity);
-						var decimalBloodQuality = math.clamp(bloodQuality / 100f, 0f, 1f);
-						var quantityMultiplier = decimalBloodQuality * decimalBloodQuality;
+						var quantityMultiplier = 1.0f;
+						if (Core.ConfigService.Settings.MinimumRewardBloodQuality < 100)
+						{
+							var decimalBloodQuality = math.clamp(bloodQuality / 100f, 0f, 1f);
+							quantityMultiplier = decimalBloodQuality * decimalBloodQuality;
+						}
 						Core.ItemService.DropItems(reward.ItemDrops, dropPos, quantityMultiplier);
                     }
                     break;

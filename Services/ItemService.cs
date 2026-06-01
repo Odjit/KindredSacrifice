@@ -67,15 +67,22 @@ internal class ItemService
 			{
 				foreach (var itemDrop in itemDrops)
 				{
-					//var quantity = UnityEngine.Random.Range(itemDrop.MinQuantity, itemDrop.MaxQuantity + 1);
-					var quantityMin = itemDrop.MinQuantity;
-					var quantityMax = itemDrop.MaxQuantity;
-					var quantityDiff = quantityMax - quantityMin;
-					var rewardQuantityOverMin = quantityDiff * qualityMultiplier;
+					int quantity = 0;
+					var minRewardQuality = Core.ConfigService.Settings.MinimumRewardBloodQuality;
+					if (minRewardQuality == 100)
+					{
+						quantity = UnityEngine.Random.Range(itemDrop.MinQuantity, itemDrop.MaxQuantity + 1);
+					}
+					if (minRewardQuality < 100)
+					{
+						var quantityMin = itemDrop.MinQuantity;
+						var quantityMax = itemDrop.MaxQuantity;
+						var quantityDiff = quantityMax - quantityMin;
+						var rewardQuantityOverMin = quantityDiff * qualityMultiplier;
 
-					var quantity = (int)Math.Ceiling(rewardQuantityOverMin + quantityMin);
-					logger.LogInfo($"Item drop reward quantity: {quantity}");
-
+						quantity = (int)Math.Ceiling(rewardQuantityOverMin + quantityMin);
+					}
+					
 					if (quantity <= 0) continue;
 
 					var itemGuid = new PrefabGUID(itemDrop.ItemPrefabGuid);
