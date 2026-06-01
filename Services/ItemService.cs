@@ -67,12 +67,14 @@ internal class ItemService
 			{
 				foreach (var itemDrop in itemDrops)
 				{
-					var quantity = UnityEngine.Random.Range(itemDrop.MinQuantity, itemDrop.MaxQuantity + 1);
+					//var quantity = UnityEngine.Random.Range(itemDrop.MinQuantity, itemDrop.MaxQuantity + 1);
+					var quantityMin = itemDrop.MinQuantity;
+					var quantityMax = itemDrop.MaxQuantity;
+					var quantityDiff = quantityMax - quantityMin;
+					var rewardQuantityOverMin = quantityDiff * qualityMultiplier;
 
-					if (qualityMultiplier != 1.0f)
-					{
-						quantity = (int)(quantity * qualityMultiplier);
-					}
+					var quantity = (int)Math.Ceiling(rewardQuantityOverMin + quantityMin);
+					logger.LogInfo($"Item drop reward quantity: {quantity}");
 
 					if (quantity <= 0) continue;
 
