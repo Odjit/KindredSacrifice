@@ -21,6 +21,7 @@ internal class SacrificeService
 
     // Single sacrifice cage (identified via NameableInteractable for persistence)
     SacrificeCageData activeCage;
+    bool sacrificeInProgress = false;
     RitualElements ritualElements = new();
 
     // Cached queries
@@ -574,6 +575,11 @@ internal class SacrificeService
                 return false;
             }
 
+            if (sacrificeInProgress)
+            {
+                return false;
+            }
+
             var entityManager = Core.EntityManager;
 
             // Check if there's a prisoner in the cage
@@ -605,6 +611,7 @@ internal class SacrificeService
 			var roundedQuality = (int)Math.Round(bloodQuality);
 			var bloodType = GetPrisonerBloodType(prisonerEntity);
 
+			sacrificeInProgress = true;
 			Core.StartCoroutine(PerformSacrificeSequence(cageEntity, prisonerEntity, userEntity, bloodQuality, roundedQuality, bloodType));
 			return true;
         }
@@ -894,6 +901,7 @@ internal class SacrificeService
         }
 
         ProcessSacrificeRewards(prisonerEntity, ownerUserEntity, bloodQuality, roundedQuality, bloodType, cageEntity);
+        sacrificeInProgress = false;
     }
 
     void MakeImmortalAndNonDismantleable(Entity entity, string markerName = null)
