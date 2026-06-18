@@ -138,7 +138,9 @@ internal class SacrificeSettings
 
     public int BloodMoonLockoutNights { get; set; } = 3;
 
-    public Dictionary<string, SacrificeReward> BloodTypeRewards { get; set; } = new()
+	public int MinimumRewardBloodQuality { get; set; } = 100;
+
+	public Dictionary<string, SacrificeReward> BloodTypeRewards { get; set; } = new()
     {
         { "Warrior", SacrificeReward.CreateDefaultMerlot() },
         { "Rogue", SacrificeReward.CreateDefaultMerlot() },

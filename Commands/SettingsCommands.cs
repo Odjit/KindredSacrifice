@@ -14,7 +14,7 @@ internal class SettingsCommands
 		var settings = Core.ConfigService.Settings;
 
 		ctx.Reply("<color=#b00> ̷͠ ͠ ⸸⃝✽⃝ <color=#d00>Blood Sacrifice <color=#f00>Settings <color=#d00>✽⃝  ̷͠⸸⃝̷͠  <color=#b00>");
-		ctx.Reply($"<color=#f44>Messages:</color> <color=#c24>{settings.EnableSacrificeMessages}</color> | <color=#f44>Accumulation:</color> <color=#c24>{settings.EnableBloodmoonAccumulation}</color> | <color=#f44>Lockout:</color> <color=#c24>{settings.BloodMoonLockoutNights} nights</color>");
+		ctx.Reply($"<color=#f44>Messages:</color> <color=#c24>{settings.EnableSacrificeMessages}</color> | <color=#f44>Accumulation:</color> <color=#c24>{settings.EnableBloodmoonAccumulation}</color> | <color=#f44>Lockout:</color> <color=#c24>{settings.BloodMoonLockoutNights} nights</color> | <color=#f44>Minimum Blood Quality for Reward:</color> <color=#c24>{settings.MinimumRewardBloodQuality}</color>");
 
 		var buffTypes = new System.Collections.Generic.List<string>();
 		var merlotTypes = new System.Collections.Generic.List<string>();
@@ -251,6 +251,30 @@ internal class SettingsCommands
 		reward.ItemDrops.Clear();
 		Core.ConfigService.SaveSettings();
 		ctx.Reply($"<color=#f44>Cleared</color> <color=#c24>{count} item drops from {name}.</color>");
+	}
+
+	[Command("setqualityrewardmin", "sqm", description: "Set the minimum blood quality at which rewards can be obtained", adminOnly: true)]
+	public static void SetQualityRewardMin(ChatCommandContext ctx, int quality)
+	{
+		if (quality < 1)
+		{
+			ctx.Reply($"<color=#f44>Quality {quality} too low, must be a whole number greater than zero</color>");
+			return;
+		}
+		if (quality > 100)
+		{
+			ctx.Reply($"<color=#f44>Quality {quality} too high, must be a whole number less than or equal to 100</color>");
+			return;
+		}
+		if (quality == Core.ConfigService.Settings.MinimumRewardBloodQuality)
+		{
+			ctx.Reply($"<color=#f44>Quality {quality} is the current setting</color>");
+			return;
+		}
+		var currentQuality = Core.ConfigService.Settings.MinimumRewardBloodQuality;
+		Core.ConfigService.Settings.MinimumRewardBloodQuality = quality;
+		Core.ConfigService.SaveSettings();
+		ctx.Reply($"<color=#360>Successfully set min quality for rewards from {currentQuality} to {quality}</color>");
 	}
 
 	static bool TryResolveBloodType(ChatCommandContext ctx, string bloodType, out string name)
